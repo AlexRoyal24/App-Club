@@ -1,221 +1,440 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MiniRed Social</title>
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: Arial, sans-serif; background: #000; color: #fff; overflow-x: hidden; animation: fadeIn 1.5s ease-in; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MiniRed Social</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #000;
+      color: #fff;
+      overflow-x: hidden;
+      animation: fadeIn 1.5s ease-in;
+    }
 
-  @keyframes fadeIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0);} }
-  @keyframes fadeOut { from { opacity:1; transform:translateY(0);} to {opacity:0; transform:translateY(20px);} }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(20px); }
+    }
 
-  /* Historias */
-  .stories { display:flex; gap:15px; overflow-x:auto; padding:15px; background:#111; border-bottom:1px solid #333; position:fixed; top:0; width:100%; z-index:10;}
-  .story { flex:0 0 auto; text-align:center; cursor:pointer;}
-  .story img { width:60px; height:60px; border-radius:50%; border:3px solid #ff0050; object-fit:cover;}
-  .story p { font-size:12px; margin-top:5px;}
+    /* Historias */
+    .stories {
+      display: flex;
+      gap: 15px;
+      overflow-x: auto;
+      padding: 15px;
+      background: #111;
+      border-bottom: 1px solid #333;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 10;
+    }
+    .story {
+      flex: 0 0 auto;
+      text-align: center;
+      cursor: pointer;
+    }
+    .story img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 3px solid #ff0050;
+      object-fit: cover;
+    }
+    .story p {
+      font-size: 12px;
+      margin-top: 5px;
+    }
 
-  /* Feed */
-  .feed { height:100vh; overflow-y:scroll; scroll-snap-type:y mandatory; margin-top:100px; margin-bottom:60px;}
-  .post { position:relative; height:100vh; display:flex; align-items:center; justify-content:center; scroll-snap-align:start; background:#111;}
-  .post video, .post img { width:100%; height:100%; object-fit:cover; cursor:pointer;}
-  .post .info { position:absolute; bottom:80px; left:20px; font-size:18px; background:rgba(0,0,0,0.5); padding:5px 10px; border-radius:5px;}
+    /* Feed tipo TikTok */
+    .feed {
+      height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      margin-top: 100px;
+      margin-bottom: 60px;
+    }
+    .post {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      scroll-snap-align: start;
+      background: #111;
+    }
+    .post video, .post img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      cursor: pointer;
+    }
+    .post .info {
+      position: absolute;
+      bottom: 120px;
+      left: 20px;
+      font-size: 18px;
+      background: rgba(0,0,0,0.5);
+      padding: 5px 10px;
+      border-radius: 5px;
+    }
 
-  /* Navbar */
-  nav { position:fixed; bottom:0; width:100%; background:rgba(0,0,0,0.9); display:flex; justify-content:space-around; padding:10px 0; border-top:1px solid #333; z-index:20;}
-  nav a { color:#fff; text-decoration:none; font-size:20px; transition:transform 0.2s; cursor:pointer;}
-  nav a:hover { transform:scale(1.2); }
+    /* Botones de interacción */
+    .post-actions {
+      position: absolute;
+      bottom: 60px;
+      left: 20px;
+      display: flex;
+      gap: 15px;
+      font-size: 18px;
+    }
+    .post-actions button {
+      background: rgba(0,0,0,0.6);
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.3s;
+    }
+    .post-actions button:hover {
+      background: #ff0050;
+      transform: scale(1.1);
+    }
 
-  /* Modal inicio/registro */
-  .modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.5s ease; z-index:30;}
-  .modal.active { opacity:1; pointer-events:all;}
-  .modal-content { background:#111; padding:30px; border-radius:10px; text-align:center; width:320px; animation: popUp 0.5s ease;}
-  @keyframes popUp { from {transform:scale(0.7); opacity:0;} to {transform:scale(1); opacity:1;} }
-  .modal input { width:90%; padding:10px; margin:8px 0; border:none; border-radius:5px; outline:none;}
-  .modal button { margin-top:10px; padding:10px 20px; border:none; border-radius:5px; background:#ff0050; color:white; cursor:pointer; transition:0.3s;}
-  .modal button:hover { background:#ff3366; }
+    /* Navbar */
+    nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: rgba(0,0,0,0.9);
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      border-top: 1px solid #333;
+      z-index: 20;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 20px;
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+    nav a:hover {
+      transform: scale(1.2);
+    }
 
-  /* Modal historias */
-  .story-modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.5s ease; z-index:40;}
-  .story-modal.active { opacity:1; pointer-events:all; }
-  .story-modal img { max-width:90%; max-height:90%; border-radius:10px; }
+    /* Modal inicio de sesión */
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      z-index: 30;
+    }
+    .modal.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .modal-content {
+      background: #111;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      width: 300px;
+      animation: popUp 0.5s ease;
+    }
+    @keyframes popUp {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal input {
+      width: 90%;
+      padding: 10px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 5px;
+      outline: none;
+    }
+    .modal button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background: #ff0050;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .modal button:hover {
+      background: #ff3366;
+    }
 
-  /* Modal reels */
-  .reel-modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.5s ease; z-index:50;}
-  .reel-modal.active { opacity:1; pointer-events:all;}
-  .reel-modal video { width:100%; height:100%; object-fit:cover; }
+    /* Modal historias */
+    .story-modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      z-index: 40;
+    }
+    .story-modal.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .story-modal img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+    }
 
-  /* Botón cerrar */
-  .close-btn { position:absolute; top:20px; right:20px; background:#ff0050; border:none; padding:10px 15px; border-radius:5px; cursor:pointer; color:#fff;}
+    /* Modal reels */
+    .reel-modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      z-index: 50;
+    }
+    .reel-modal.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .reel-modal video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-  /* Botones reels */
-  .reel-actions { position:absolute; right:20px; bottom:100px; display:flex; flex-direction:column; gap:20px; align-items:center;}
-  .reel-actions button { background:rgba(0,0,0,0.6); border:none; border-radius:50%; width:50px; height:50px; font-size:22px; color:#fff; cursor:pointer; transition:transform 0.2s, background 0.3s;}
-  .reel-actions button:hover { background:#ff0050; transform:scale(1.2); }
+    /* Botón cerrar */
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #ff0050;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      color: #fff;
+    }
 
-  /* Perfil tuerca */
-  .settings-btn { position:absolute; top:20px; right:20px; font-size:24px; cursor:pointer; }
-</style>
+    /* Botones de interacción en reels */
+    .reel-actions {
+      position: absolute;
+      right: 20px;
+      bottom: 100px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+    }
+    .reel-actions button {
+      background: rgba(0,0,0,0.6);
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 22px;
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.3s;
+    }
+    .reel-actions button:hover {
+      background: #ff0050;
+      transform: scale(1.2);
+    }
+  </style>
 </head>
 <body>
 
-<!-- Modal inicio/registro -->
-<div class="modal" id="loginModal">
-  <div class="modal-content">
-    <h2>Bienvenido a MiniRed</h2>
-    <input type="text" id="usuario" placeholder="Nombre de usuario"><br>
-    <input type="email" id="email" placeholder="Correo electrónico"><br>
-    <button onclick="iniciarSesion()">Iniciar Sesión (Nuevo)</button><br>
-    <button onclick="registrarse()">Registrarse (Existente)</button><br>
-    <button onclick="alert('Simulación: Iniciar con Gmail')">Iniciar con Gmail</button>
+  <!-- Modal inicio de sesión al entrar -->
+  <div class="modal" id="loginModal">
+    <div class="modal-content">
+      <h2>Iniciar Sesión / Registrarse</h2>
+      <input type="text" id="usuario" placeholder="Usuario"><br>
+      <input type="email" id="email" placeholder="Correo electrónico"><br>
+      <button onclick="iniciarSesion()">Entrar</button>
+    </div>
   </div>
-</div>
 
-<!-- Historias -->
-<div class="stories">
-  <div class="story" onclick="openStory('img/foto1.jpg')">
-    <img src="img/foto1.jpg" alt="Historia de Alex">
-    <p>Alex</p>
+  <!-- Historias -->
+  <div class="stories">
+    <div class="story" onclick="openStory('img/foto1.jpg')">
+      <img src="img/foto1.jpg" alt="Historia de Alex">
+      <p>Alex</p>
+    </div>
+    <div class="story" onclick="openStory('img/foto2.jpg')">
+      <img src="img/foto2.jpg" alt="Historia de Naunet">
+      <p>Naunet</p>
+    </div>
+    <div class="story" onclick="openStory('img/foto3.jpg')">
+      <img src="img/foto3.jpg" alt="Historia de Amigo">
+      <p>Amigo</p>
+    </div>
   </div>
-  <div class="story" onclick="openStory('img/foto2.jpg')">
-    <img src="img/foto2.jpg" alt="Historia de Naunet">
-    <p>Naunet</p>
+
+  <!-- Feed -->
+  <div class="feed">
+    <div class="post" data-post-id="1">
+      <video src="videos/video1.mp4" muted loop></video>
+      <div class="info">@usuario1</div>
+      <div class="post-actions">
+        <button onclick="likePost(1)">❤️ <span id="likes-1">0</span></button>
+        <button onclick="commentPost(1)">💬</button>
+        <button onclick="sharePost(1)">↪️</button>
+      </div>
+    </div>
+    <div class="post" data-post-id="2">
+      <img src="img/foto1.jpg" alt="Foto de usuario2">
+      <div class="info">@usuario2</div>
+      <div class="post-actions">
+        <button onclick="likePost(2)">❤️ <span id="likes-2">0</span></button>
+        <button onclick="commentPost(2)">💬</button>
+        <button onclick="sharePost(2)">↪️</button>
+      </div>
+    </div>
+    <div class="post" data-post-id="3">
+      <video src="videos/video2.mp4" muted loop></video>
+      <div class="info">@usuario3</div>
+      <div class="post-actions">
+        <button onclick="likePost(3)">❤️ <span id="likes-3">0</span></button>
+        <button onclick="commentPost(3)">💬</button>
+        <button onclick="sharePost(3)">↪️</button>
+      </div>
+    </div>
   </div>
-  <div class="story" onclick="openStory('img/foto3.jpg')">
-    <img src="img/foto3.jpg" alt="Historia de Amigo">
-    <p>Amigo</p>
+
+  <!-- Navbar -->
+  <nav>
+    <a href="#" onclick="scrollToTop()">🏠</a>
+    <a href="#" onclick="alert('Agregar publicación ➕')">➕</a>
+    <a href="#" onclick="alert('Buscar 🔍')">🔍</a>
+    <a href="#" onclick="alert('Perfil 👤')">👤</a>
+  </nav>
+
+  <!-- Modal historias -->
+  <div class="story-modal" id="storyModal">
+    <img id="storyImg" src="" alt="Historia">
   </div>
-</div>
 
-<!-- Feed -->
-<div class="feed">
-  <div class="post">
-    <video src="videos/video1.mp4" muted loop></video>
-    <div class="info">@usuario1</div>
+  <!-- Modal reels -->
+  <div class="reel-modal" id="reelModal">
+    <button class="close-btn" onclick="closeReel()">✖</button>
+    <video id="reelVideo" controls></video>
+    <div class="reel-actions">
+      <button onclick="alert('Te gustó ❤️')">❤️</button>
+      <button onclick="alert('Abrir comentarios 💬')">💬</button>
+      <button onclick="alert('Compartido ↪️')">↪️</button>
+    </div>
   </div>
-  <div class="post">
-    <img src="img/foto1.jpg" alt="Foto de usuario2">
-    <div class="info">@usuario2</div>
-  </div>
-  <div class="post">
-    <video src="videos/video2.mp4" muted loop></video>
-    <div class="info">@usuario3</div>
-  </div>
-</div>
 
-<!-- Navbar -->
-<nav>
-  <a href="#" onclick="scrollToTop()">🏠</a>
-  <a href="#" onclick="alert('Agregar publicación ➕')">➕</a>
-  <a href="#" onclick="alert('Buscar 🔍')">🔍</a>
-  <a href="#" onclick="abrirPerfil()">👤</a>
-</nav>
+  <script>
+    const modal = document.getElementById("loginModal");
+    const storyModal = document.getElementById("storyModal");
+    const storyImg = document.getElementById("storyImg");
+    const reelModal = document.getElementById("reelModal");
+    const reelVideo = document.getElementById("reelVideo");
 
-<!-- Modal historias -->
-<div class="story-modal" id="storyModal">
-  <img id="storyImg" src="" alt="Historia">
-</div>
+    // Mostrar modal al entrar si no hay usuario
+    window.addEventListener("load", () => {
+      const usuarioGuardado = localStorage.getItem("usuarioApp");
+      if (!usuarioGuardado) {
+        modal.classList.add("active");
+      }
+    });
 
-<!-- Modal reels -->
-<div class="reel-modal" id="reelModal">
-  <button class="close-btn" onclick="closeReel()">✖</button>
-  <video id="reelVideo" controls></video>
-  <div class="reel-actions">
-    <button onclick="alert('Te gustó ❤️')">❤️</button>
-    <button onclick="alert('Abrir comentarios 💬')">💬</button>
-    <button onclick="alert('Compartido ↪️')">↪️</button>
-  </div>
-</div>
+    // Función iniciar sesión / registrar
+    function iniciarSesion() {
+      const usuarioInput = document.getElementById("usuario").value.trim();
+      const emailInput = document.getElementById("email").value.trim();
+      if (usuarioInput && emailInput) {
+        localStorage.setItem("usuarioApp", JSON.stringify({ usuario:usuarioInput, email:emailInput }));
+        alert(`Bienvenido ${usuarioInput} ✨`);
+        modal.classList.remove("active");
+      } else {
+        alert("Por favor completa ambos campos.");
+      }
+    }
 
-<!-- Modal perfil -->
-<div class="modal" id="perfilModal">
-  <div class="modal-content">
-    <h2 id="nombreUsuario">Usuario</h2>
-    <span class="settings-btn" onclick="cerrarSesion()">⚙️ Cerrar sesión</span>
-  </div>
-</div>
+    // Historias
+    function openStory(src) {
+      storyImg.src = src;
+      storyModal.classList.add("active");
+      setTimeout(closeStory, 4000);
+    }
+    function closeStory() {
+      storyModal.classList.remove("active");
+    }
 
-<script>
-const modal = document.getElementById("loginModal");
-const perfilModal = document.getElementById("perfilModal");
-const storyModal = document.getElementById("storyModal");
-const storyImg = document.getElementById("storyImg");
-const reelModal = document.getElementById("reelModal");
-const reelVideo = document.getElementById("reelVideo");
+    // Reels
+    function openReel(src) {
+      reelVideo.src = src;
+      reelVideo.play();
+      reelModal.classList.add("active");
+    }
+    function closeReel() {
+      reelVideo.pause();
+      reelModal.classList.remove("active");
+    }
 
-// Mostrar modal si no hay usuario
-window.addEventListener("load", () => {
-  const usuarioGuardado = JSON.parse(localStorage.getItem("usuarioApp"));
-  if (!usuarioGuardado) modal.classList.add("active");
-});
+    // Autoplay videos feed
+    const videos = document.querySelectorAll(".feed video");
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.play();
+        else entry.target.pause();
+      });
+    }, { threshold: 0.7 });
+    videos.forEach(video => {
+      observer.observe(video);
+      video.addEventListener("click", () => openReel(video.src));
+    });
 
-// Generar contraseña aleatoria de 8 caracteres
-function generarContrasena() {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$';
-  let pass = '';
-  for(let i=0; i<8; i++) pass += chars.charAt(Math.floor(Math.random()*chars.length));
-  return pass;
-}
+    // Scroll al inicio con botón home
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-// Iniciar sesión nuevo usuario
-function iniciarSesion() {
-  const usuario = document.getElementById("usuario").value.trim();
-  const email = document.getElementById("email").value.trim();
-  if(usuario && email){
-    const pass = generarContrasena();
-    localStorage.setItem("usuarioApp", JSON.stringify({usuario,email,pass}));
-    alert(`Bienvenido ${usuario} ✨\nTu contraseña generada: ${pass}`);
-    modal.classList.remove("active");
-  } else alert("Completa todos los campos");
-}
-
-// Registrarse (usuario existente)
-function registrarse() {
-  const usuario = document.getElementById("usuario").value.trim();
-  const email = document.getElementById("email").value.trim();
-  const usuarioGuardado = JSON.parse(localStorage.getItem("usuarioApp"));
-  if(usuarioGuardado && usuarioGuardado.email === email){
-    alert(`Bienvenido de nuevo ${usuarioGuardado.usuario} ✨`);
-    modal.classList.remove("active");
-  } else alert("Correo no registrado, utiliza Iniciar Sesión para nuevos usuarios");
-}
-
-// Abrir perfil
-function abrirPerfil() {
-  const usuarioGuardado = JSON.parse(localStorage.getItem("usuarioApp"));
-  if(usuarioGuardado){
-    document.getElementById("nombreUsuario").textContent = usuarioGuardado.usuario;
-    perfilModal.classList.add("active");
-  } else alert("No hay usuario registrado");
-}
-
-// Cerrar sesión
-function cerrarSesion() {
-  localStorage.removeItem("usuarioApp");
-  perfilModal.classList.remove("active");
-  modal.classList.add("active");
-}
-
-// Historias
-function openStory(src){ storyImg.src=src; storyModal.classList.add("active"); setTimeout(closeStory,4000);}
-function closeStory(){ storyModal.classList.remove("active");}
-
-// Reels
-function openReel(src){ reelVideo.src=src; reelVideo.play(); reelModal.classList.add("active"); }
-function closeReel(){ reelVideo.pause(); reelModal.classList.remove("active"); }
-
-// Videos autoplay feed
-const videos = document.querySelectorAll(".feed video");
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => entry.isIntersecting ? entry.target.play() : entry.target.pause());
-},{ threshold:0.7});
-videos.forEach(video => { observer.observe(video); video.addEventListener("click", ()=>openReel(video.src)); });
-
-// Scroll home
-function scrollToTop(){ window.scrollTo({top:0,behavior:'smooth'}); }
-
-</script>
+    // Interacciones posts
+    const likes = {};
+    function likePost(id) {
+      likes[id] = (likes[id] || 0) + 1;
+      document.getElementById(`likes-${id}`).textContent = likes[id];
+    }
+    function commentPost(id) {
+      const comment = prompt("Escribe tu comentario:");
+      if (comment) alert(`Comentario en post ${id}: ${comment}`);
+    }
+    function sharePost(id) {
+      alert(`Compartido post ${id}`);
+    }
+  </script>
 </body>
 </html>
