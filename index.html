@@ -1,1 +1,383 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MiniRed Social</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #000;
+      color: #fff;
+      overflow-x: hidden;
+      animation: fadeIn 1.5s ease-in;
+    }
 
+    /* Animación entrada/salida */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(20px); }
+    }
+
+    /* Historias */
+    .stories {
+      display: flex;
+      gap: 15px;
+      overflow-x: auto;
+      padding: 15px;
+      background: #111;
+      border-bottom: 1px solid #333;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 10;
+    }
+    .story {
+      flex: 0 0 auto;
+      text-align: center;
+      cursor: pointer;
+    }
+    .story img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 3px solid #ff0050;
+      object-fit: cover;
+    }
+    .story p {
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    /* Feed estilo TikTok */
+    .feed {
+      height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      margin-top: 100px;
+      margin-bottom: 60px;
+    }
+    .post {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      scroll-snap-align: start;
+      background: #111;
+    }
+    .post video, .post img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      cursor: pointer;
+    }
+    .post .info {
+      position: absolute;
+      bottom: 80px;
+      left: 20px;
+      font-size: 18px;
+      background: rgba(0,0,0,0.5);
+      padding: 5px 10px;
+      border-radius: 5px;
+    }
+
+    /* Navbar */
+    nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: rgba(0,0,0,0.9);
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      border-top: 1px solid #333;
+      z-index: 20;
+    }
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 20px;
+      transition: transform 0.2s;
+    }
+    nav a:hover {
+      transform: scale(1.2);
+    }
+
+    /* Modal login */
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      z-index: 30;
+    }
+    .modal.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .modal-content {
+      background: #111;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      width: 300px;
+      animation: popUp 0.5s ease;
+    }
+    @keyframes popUp {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal input {
+      width: 90%;
+      padding: 10px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 5px;
+      outline: none;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background: #ff0050;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #ff3366;
+    }
+
+    /* Modal historias */
+    .story-modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      z-index: 40;
+    }
+    .story-modal.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .story-modal img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+    }
+
+    /* Modal reels */
+    .reel-modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      z-index: 50;
+    }
+    .reel-modal.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .reel-modal video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Botón cerrar */
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #ff0050;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    /* Botones de interacción en reels */
+    .reel-actions {
+      position: absolute;
+      right: 20px;
+      bottom: 100px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+    }
+    .reel-actions button {
+      background: rgba(0,0,0,0.6);
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 22px;
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.3s;
+    }
+    .reel-actions button:hover {
+      background: #ff0050;
+      transform: scale(1.2);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Historias -->
+  <div class="stories">
+    <div class="story" onclick="openStory('img/foto1.jpg')">
+      <img src="img/foto1.jpg" alt="Historia">
+      <p>Alex</p>
+    </div>
+    <div class="story" onclick="openStory('img/foto2.jpg')">
+      <img src="img/foto2.jpg" alt="Historia">
+      <p>Naunet</p>
+    </div>
+    <div class="story" onclick="openStory('img/foto3.jpg')">
+      <img src="img/foto3.jpg" alt="Historia">
+      <p>Amigo</p>
+    </div>
+  </div>
+
+  <!-- Feed tipo TikTok -->
+  <div class="feed">
+    <div class="post">
+      <video src="videos/video1.mp4" muted loop></video>
+      <div class="info">@usuario1</div>
+    </div>
+    <div class="post">
+      <img src="img/foto1.jpg" alt="Foto">
+      <div class="info">@usuario2</div>
+    </div>
+    <div class="post">
+      <video src="videos/video2.mp4" muted loop></video>
+      <div class="info">@usuario3</div>
+    </div>
+  </div>
+
+  <!-- Navbar -->
+  <nav>
+    <a href="#">🏠</a>
+    <a href="#" onclick="toggleModal()">🔑</a>
+    <a href="#">➕</a>
+    <a href="#">🔍</a>
+    <a href="#">👤</a>
+  </nav>
+
+  <!-- Modal login -->
+  <div class="modal" id="loginModal">
+    <div class="modal-content">
+      <h2>Iniciar Sesión</h2>
+      <input type="text" placeholder="Usuario"><br>
+      <input type="password" placeholder="Contraseña"><br>
+      <button onclick="cerrarSesion()">Entrar</button>
+      <button onclick="toggleModal()">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- Modal historias -->
+  <div class="story-modal" id="storyModal">
+    <img id="storyImg" src="" alt="Historia">
+  </div>
+
+  <!-- Modal reels -->
+  <div class="reel-modal" id="reelModal">
+    <button class="close-btn" onclick="closeReel()">✖</button>
+    <video id="reelVideo" controls></video>
+    <div class="reel-actions">
+      <button onclick="alert('Te gustó ❤️')">❤️</button>
+      <button onclick="alert('Abrir comentarios 💬')">💬</button>
+      <button onclick="alert('Compartido ↪️')">↪️</button>
+    </div>
+  </div>
+
+  <script>
+    const modal = document.getElementById("loginModal");
+    const storyModal = document.getElementById("storyModal");
+    const storyImg = document.getElementById("storyImg");
+
+    const reelModal = document.getElementById("reelModal");
+    const reelVideo = document.getElementById("reelVideo");
+
+    // Abrir/cerrar login
+    function toggleModal() {
+      modal.classList.toggle("active");
+    }
+    function cerrarSesion() {
+      alert("Sesión iniciada/cerrada con éxito ✨");
+      toggleModal();
+    }
+
+    // Historias
+    function openStory(src) {
+      storyImg.src = src;
+      storyModal.classList.add("active");
+      setTimeout(() => { closeStory(); }, 4000);
+    }
+    function closeStory() {
+      storyModal.classList.remove("active");
+    }
+
+    // Reels
+    function openReel(src) {
+      reelVideo.src = src;
+      reelVideo.play();
+      reelModal.classList.add("active");
+    }
+    function closeReel() {
+      reelVideo.pause();
+      reelModal.classList.remove("active");
+    }
+
+    // Autoplay y pause en feed
+    const videos = document.querySelectorAll(".feed video");
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.play();
+        } else {
+          entry.target.pause();
+        }
+      });
+    }, { threshold: 0.7 });
+
+    videos.forEach(video => {
+      observer.observe(video);
+      video.addEventListener("click", () => openReel(video.src));
+    });
+
+    // Animación salida
+    window.addEventListener("beforeunload", () => {
+      document.body.style.animation = "fadeOut 1s ease";
+    });
+  </script>
+</body>
+</html>
