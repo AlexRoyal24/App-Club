@@ -13,15 +13,8 @@
       overflow-x: hidden;
       animation: fadeIn 1.5s ease-in;
     }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeOut {
-      from { opacity: 1; transform: translateY(0); }
-      to { opacity: 0; transform: translateY(20px); }
-    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(20px); } }
 
     /* Historias */
     .stories {
@@ -78,35 +71,12 @@
     }
     .post .info {
       position: absolute;
-      bottom: 120px;
+      bottom: 80px;
       left: 20px;
       font-size: 18px;
       background: rgba(0,0,0,0.5);
       padding: 5px 10px;
       border-radius: 5px;
-    }
-
-    /* Botones de interacción */
-    .post-actions {
-      position: absolute;
-      bottom: 60px;
-      left: 20px;
-      display: flex;
-      gap: 15px;
-      font-size: 18px;
-    }
-    .post-actions button {
-      background: rgba(0,0,0,0.6);
-      border: none;
-      padding: 8px 12px;
-      border-radius: 5px;
-      color: #fff;
-      cursor: pointer;
-      transition: transform 0.2s, background 0.3s;
-    }
-    .post-actions button:hover {
-      background: #ff0050;
-      transform: scale(1.1);
     }
 
     /* Navbar */
@@ -128,9 +98,7 @@
       transition: transform 0.2s;
       cursor: pointer;
     }
-    nav a:hover {
-      transform: scale(1.2);
-    }
+    nav a:hover { transform: scale(1.2); }
 
     /* Modal inicio de sesión */
     .modal {
@@ -146,10 +114,7 @@
       transition: opacity 0.5s ease;
       z-index: 30;
     }
-    .modal.active {
-      opacity: 1;
-      pointer-events: all;
-    }
+    .modal.active { opacity: 1; pointer-events: all; }
     .modal-content {
       background: #111;
       padding: 30px;
@@ -158,10 +123,7 @@
       width: 300px;
       animation: popUp 0.5s ease;
     }
-    @keyframes popUp {
-      from { transform: scale(0.7); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
+    @keyframes popUp { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     .modal input {
       width: 90%;
       padding: 10px;
@@ -180,9 +142,7 @@
       cursor: pointer;
       transition: 0.3s;
     }
-    .modal button:hover {
-      background: #ff3366;
-    }
+    .modal button:hover { background: #ff3366; }
 
     /* Modal historias */
     .story-modal {
@@ -198,15 +158,8 @@
       transition: opacity 0.5s ease;
       z-index: 40;
     }
-    .story-modal.active {
-      opacity: 1;
-      pointer-events: all;
-    }
-    .story-modal img {
-      max-width: 90%;
-      max-height: 90%;
-      border-radius: 10px;
-    }
+    .story-modal.active { opacity: 1; pointer-events: all; }
+    .story-modal img { max-width: 90%; max-height: 90%; border-radius: 10px; }
 
     /* Modal reels */
     .reel-modal {
@@ -222,15 +175,8 @@
       transition: opacity 0.5s ease;
       z-index: 50;
     }
-    .reel-modal.active {
-      opacity: 1;
-      pointer-events: all;
-    }
-    .reel-modal video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .reel-modal.active { opacity: 1; pointer-events: all; }
+    .reel-modal video { width: 100%; height: 100%; object-fit: cover; }
 
     /* Botón cerrar */
     .close-btn {
@@ -266,10 +212,8 @@
       cursor: pointer;
       transition: transform 0.2s, background 0.3s;
     }
-    .reel-actions button:hover {
-      background: #ff0050;
-      transform: scale(1.2);
-    }
+    .reel-actions button:hover { background: #ff0050; transform: scale(1.2); }
+
   </style>
 </head>
 <body>
@@ -278,8 +222,8 @@
   <div class="modal" id="loginModal">
     <div class="modal-content">
       <h2>Iniciar Sesión / Registrarse</h2>
-      <input type="text" id="usuario" placeholder="Usuario"><br>
       <input type="email" id="email" placeholder="Correo electrónico"><br>
+      <input type="password" id="password" placeholder="Contraseña (8 caracteres)"><br>
       <button onclick="iniciarSesion()">Entrar</button>
     </div>
   </div>
@@ -300,34 +244,19 @@
     </div>
   </div>
 
-  <!-- Feed -->
+  <!-- Feed tipo TikTok -->
   <div class="feed">
-    <div class="post" data-post-id="1">
+    <div class="post">
       <video src="videos/video1.mp4" muted loop></video>
       <div class="info">@usuario1</div>
-      <div class="post-actions">
-        <button onclick="likePost(1)">❤️ <span id="likes-1">0</span></button>
-        <button onclick="commentPost(1)">💬</button>
-        <button onclick="sharePost(1)">↪️</button>
-      </div>
     </div>
-    <div class="post" data-post-id="2">
+    <div class="post">
       <img src="img/foto1.jpg" alt="Foto de usuario2">
       <div class="info">@usuario2</div>
-      <div class="post-actions">
-        <button onclick="likePost(2)">❤️ <span id="likes-2">0</span></button>
-        <button onclick="commentPost(2)">💬</button>
-        <button onclick="sharePost(2)">↪️</button>
-      </div>
     </div>
-    <div class="post" data-post-id="3">
+    <div class="post">
       <video src="videos/video2.mp4" muted loop></video>
       <div class="info">@usuario3</div>
-      <div class="post-actions">
-        <button onclick="likePost(3)">❤️ <span id="likes-3">0</span></button>
-        <button onclick="commentPost(3)">💬</button>
-        <button onclick="sharePost(3)">↪️</button>
-      </div>
     </div>
   </div>
 
@@ -362,24 +291,42 @@
     const reelModal = document.getElementById("reelModal");
     const reelVideo = document.getElementById("reelVideo");
 
-    // Mostrar modal al entrar si no hay usuario
+    // Mostrar modal al entrar si no hay usuario actual
     window.addEventListener("load", () => {
-      const usuarioGuardado = localStorage.getItem("usuarioApp");
-      if (!usuarioGuardado) {
-        modal.classList.add("active");
-      }
+      const usuarioActual = localStorage.getItem("usuarioActual");
+      if (!usuarioActual) modal.classList.add("active");
     });
 
-    // Función iniciar sesión / registrar
+    function generarContrasena() {
+      const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+      let pass = "";
+      for (let i = 0; i < 8; i++) pass += chars.charAt(Math.floor(Math.random() * chars.length));
+      return pass;
+    }
+
     function iniciarSesion() {
-      const usuarioInput = document.getElementById("usuario").value.trim();
       const emailInput = document.getElementById("email").value.trim();
-      if (usuarioInput && emailInput) {
-        localStorage.setItem("usuarioApp", JSON.stringify({ usuario:usuarioInput, email:emailInput }));
-        alert(`Bienvenido ${usuarioInput} ✨`);
-        modal.classList.remove("active");
+      let passwordInput = document.getElementById("password").value.trim();
+      if (!emailInput) { alert("Por favor ingresa tu correo."); return; }
+
+      let usuarios = JSON.parse(localStorage.getItem("usuariosApp") || "[]");
+      let usuarioExistente = usuarios.find(u => u.email === emailInput);
+
+      if (usuarioExistente) {
+        if (passwordInput === usuarioExistente.password) {
+          alert(`Bienvenido de nuevo ${emailInput} ✨`);
+          localStorage.setItem("usuarioActual", emailInput);
+          modal.classList.remove("active");
+        } else {
+          alert("Contraseña incorrecta.");
+        }
       } else {
-        alert("Por favor completa ambos campos.");
+        if (!passwordInput) passwordInput = generarContrasena();
+        usuarios.push({ email: emailInput, password: passwordInput });
+        localStorage.setItem("usuariosApp", JSON.stringify(usuarios));
+        localStorage.setItem("usuarioActual", emailInput);
+        alert(`Cuenta creada. Tu contraseña es: ${passwordInput}`);
+        modal.classList.remove("active");
       }
     }
 
@@ -389,9 +336,7 @@
       storyModal.classList.add("active");
       setTimeout(closeStory, 4000);
     }
-    function closeStory() {
-      storyModal.classList.remove("active");
-    }
+    function closeStory() { storyModal.classList.remove("active"); }
 
     // Reels
     function openReel(src) {
@@ -412,29 +357,9 @@
         else entry.target.pause();
       });
     }, { threshold: 0.7 });
-    videos.forEach(video => {
-      observer.observe(video);
-      video.addEventListener("click", () => openReel(video.src));
-    });
+    videos.forEach(video => { observer.observe(video); video.addEventListener("click", () => openReel(video.src)); });
 
-    // Scroll al inicio con botón home
-    function scrollToTop() {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    // Interacciones posts
-    const likes = {};
-    function likePost(id) {
-      likes[id] = (likes[id] || 0) + 1;
-      document.getElementById(`likes-${id}`).textContent = likes[id];
-    }
-    function commentPost(id) {
-      const comment = prompt("Escribe tu comentario:");
-      if (comment) alert(`Comentario en post ${id}: ${comment}`);
-    }
-    function sharePost(id) {
-      alert(`Compartido post ${id}`);
-    }
+    function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
   </script>
 </body>
 </html>
