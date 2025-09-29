@@ -47,7 +47,7 @@
       </div>
 
       <!-- Feed tipo TikTok -->
-      <div class="feed">
+      <div class="feed" id="feed">
         <div class="post">
           <video src="videos/video1.mp4" muted loop></video>
           <div class="info">@usuario1</div>
@@ -66,11 +66,11 @@
     <!-- Sección Agregar -->
     <section id="agregar" class="section">
       <h2>➕ Agregar Publicación</h2>
-      <p>Aquí podrás subir fotos o videos.</p>
+      <p>Aquí podrás subir fotos, videos o audios.</p>
 
-      <!-- Botón profesional para subir -->
-      <button class="upload-btn" onclick="document.getElementById('fileInput').click()">📤 Subir archivo</button>
-      <input type="file" id="fileInput" accept="image/*,video/*,audio/*" style="display:none" onchange="previewFile(event)">
+      <!-- Botón funcional -->
+      <button class="upload-btn" id="uploadBtn">📤 Subir archivo</button>
+      <input type="file" id="fileInput" accept="image/*,video/*,audio/*" style="display:none">
       
       <!-- Vista previa -->
       <div id="preview" style="margin-top:15px;"></div>
@@ -112,8 +112,13 @@
   </div>
 
   <script>
+    // Botón que abre el input
+    document.getElementById("uploadBtn").addEventListener("click", () => {
+      document.getElementById("fileInput").click();
+    });
+
     // Vista previa del archivo
-    function previewFile(event) {
+    document.getElementById("fileInput").addEventListener("change", function(event) {
       const file = event.target.files[0];
       const preview = document.getElementById("preview");
       preview.innerHTML = "";
@@ -137,7 +142,7 @@
           preview.appendChild(audio);
         }
       }
-    }
+    });
   </script>
 
   <script src="script.js"></script>
