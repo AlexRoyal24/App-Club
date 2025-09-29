@@ -63,9 +63,17 @@
       </div>
     </section>
 
+    <!-- Sección Agregar -->
     <section id="agregar" class="section">
       <h2>➕ Agregar Publicación</h2>
       <p>Aquí podrás subir fotos o videos.</p>
+
+      <!-- Botón profesional para subir -->
+      <button class="upload-btn" onclick="document.getElementById('fileInput').click()">📤 Subir archivo</button>
+      <input type="file" id="fileInput" accept="image/*,video/*,audio/*" style="display:none" onchange="previewFile(event)">
+      
+      <!-- Vista previa -->
+      <div id="preview" style="margin-top:15px;"></div>
     </section>
 
     <section id="buscar" class="section">
@@ -102,6 +110,35 @@
       <button onclick="alert('Compartido ↪️')">↪️</button>
     </div>
   </div>
+
+  <script>
+    // Vista previa del archivo
+    function previewFile(event) {
+      const file = event.target.files[0];
+      const preview = document.getElementById("preview");
+      preview.innerHTML = "";
+
+      if (file) {
+        if (file.type.startsWith("image/")) {
+          const img = document.createElement("img");
+          img.src = URL.createObjectURL(file);
+          img.style.maxWidth = "200px";
+          preview.appendChild(img);
+        } else if (file.type.startsWith("video/")) {
+          const video = document.createElement("video");
+          video.src = URL.createObjectURL(file);
+          video.controls = true;
+          video.style.maxWidth = "250px";
+          preview.appendChild(video);
+        } else if (file.type.startsWith("audio/")) {
+          const audio = document.createElement("audio");
+          audio.src = URL.createObjectURL(file);
+          audio.controls = true;
+          preview.appendChild(audio);
+        }
+      }
+    }
+  </script>
 
   <script src="script.js"></script>
 </body>
