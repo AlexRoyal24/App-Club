@@ -5,6 +5,9 @@ const storyModal = document.getElementById("storyModal");
 const storyImg = document.getElementById("storyImg");
 const reelModal = document.getElementById("reelModal");
 const reelVideo = document.getElementById("reelVideo");
+const uploadFile = document.getElementById("uploadFile");
+const feedInicio = document.getElementById("feedInicio");
+const feedPerfil = document.getElementById("feedPerfil");
 
 // Mostrar modal si no hay usuario actual
 window.addEventListener("load", () => {
@@ -12,18 +15,10 @@ window.addEventListener("load", () => {
   if (!usuarioActual) modal.classList.add("active");
 });
 
-function mostrarLogin() {
-  loginForm.style.display = "block";
-  registroForm.style.display = "none";
-}
-function mostrarRegistro() {
-  loginForm.style.display = "none";
-  registroForm.style.display = "block";
-}
+function mostrarLogin() { loginForm.style.display = "block"; registroForm.style.display = "none"; }
+function mostrarRegistro() { loginForm.style.display = "none"; registroForm.style.display = "block"; }
 
-// Funciones de login y registro...
-// (Mantener las mismas que ya tienes)
-
+// Historias
 function openStory(src) {
   storyImg.src = src;
   storyModal.classList.add("active");
@@ -31,6 +26,7 @@ function openStory(src) {
 }
 function closeStory() { storyModal.classList.remove("active"); }
 
+// Reels
 function openReel(src) {
   reelVideo.src = src;
   reelVideo.play();
@@ -41,21 +37,7 @@ function closeReel() {
   reelModal.classList.remove("active");
 }
 
-// Autoplay videos feed
-const videos = document.querySelectorAll(".feed video");
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => { 
-    if (entry.isIntersecting) entry.target.play(); 
-    else entry.target.pause(); 
-  });
-}, { threshold: 0.7 });
-videos.forEach(video => { 
-  observer.observe(video); 
-  video.addEventListener("click", () => openReel(video.src)); 
-});
-
-function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
-
+// Cambiar secciones
 function mostrarSeccion(id, btn) {
   document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
   document.getElementById(id).classList.add("active");
@@ -64,47 +46,47 @@ function mostrarSeccion(id, btn) {
   btn.classList.add("active");
 }
 
-// ** NUEVO: Subida automática en un solo clic **
-const uploadBtn = document.getElementById("uploadBtn");
-const uploadFile = document.getElementById("uploadFile");
-const previewArea = document.getElementById("previewArea");
-const feed = document.querySelector(".feed");
-
-uploadBtn.addEventListener("click", () => {
+// Función para abrir el selector de archivos desde el "+"
+function triggerUpload(btn) {
   uploadFile.click();
-});
+}
 
+// Subida de archivos
 uploadFile.addEventListener("change", () => {
   const archivo = uploadFile.files[0];
   if (!archivo) return;
 
-  // Vista previa
-  previewArea.innerHTML = "";
-  let element;
-  if (archivo.type.startsWith("image/")) {
-    element = document.createElement("img");
-    element.src = URL.createObjectURL(archivo);
-    element.style.maxWidth = "90%";
-  } else if (archivo.type.startsWith("video/")) {
-    element = document.createElement("video");
-    element.src = URL.createObjectURL(archivo);
-    element.controls = true;
-    element.style.maxWidth = "90%";
-    element.style.maxHeight = "60vh";
-  }
-  previewArea.appendChild(element);
-
-  // Publicar automáticamente en el feed
+  // Crear post
   const nuevoPost = document.createElement("div");
   nuevoPost.classList.add("post");
-  nuevoPost.appendChild(element.cloneNode(true));
 
-  // Insertar arriba en el feed
-  feed.prepend(nuevoPost);
+  let contenido;
+  if (archivo.type.startsWith("image/")) {
+    contenido = document.createElement("img");
+    contenido.src = URL.createObjectURL(archivo);
+  } else if (archivo.type.startsWith("video/")) {
+    contenido = document.createElement("video");
+    contenido.src = URL.createObjectURL(archivo);
+    contenido.muted = true;
+    contenido.loop = true;
+    contenido.autoplay = true;
+  }
 
-  // Limpiar input para poder subir nuevamente
+  // Nombre de usuario en la publicación
+  const info = document.createElement("div");
+  info.classList.add("info");
+  const usuario = localStorage.getItem("usuarioActual") || "Usuario";
+  info.textContent = `@${usuario}`;
+
+  nuevoPost.appendChild(contenido);
+  nuevoPost.appendChild(info);
+
+  // Agregar a Inicio y Perfil
+  feedInicio.prepend(nuevoPost.cloneNode(true));
+  feedPerfil.prepend(nuevoPost);
+
+  // Limpiar input
   uploadFile.value = "";
-  previewArea.innerHTML = "";
 
-  alert("✅ Publicación agregada automáticamente");
+  alert("✅ Publicación agregada a Inicio y Perfil");
 });
