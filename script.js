@@ -6,7 +6,7 @@ const storyImg = document.getElementById("storyImg");
 const reelModal = document.getElementById("reelModal");
 const reelVideo = document.getElementById("reelVideo");
 
-// Mostrar modal al entrar si no hay usuario actual
+// Mostrar modal si no hay usuario actual
 window.addEventListener("load", () => {
   const usuarioActual = localStorage.getItem("usuarioActual");
   if (!usuarioActual) modal.classList.add("active");
@@ -21,49 +21,9 @@ function mostrarRegistro() {
   registroForm.style.display = "block";
 }
 
-function generarContrasena() {
-  const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
-  let pass = "";
-  for (let i = 0; i < 8; i++) pass += chars.charAt(Math.floor(Math.random() * chars.length));
-  return pass;
-}
+// Funciones de login y registro...
+// (Mantener las mismas que ya tienes)
 
-function iniciarSesion() {
-  const emailInput = document.getElementById("email").value.trim();
-  const passwordInput = document.getElementById("password").value.trim();
-  if (!emailInput || !passwordInput) { alert("Completa ambos campos."); return; }
-
-  let usuarios = JSON.parse(localStorage.getItem("usuariosApp") || "[]");
-  let usuarioExistente = usuarios.find(u => u.email === emailInput);
-
-  if (usuarioExistente) {
-    if (passwordInput === usuarioExistente.password) {
-      alert(`Bienvenido de nuevo ${emailInput} ✨`);
-      localStorage.setItem("usuarioActual", emailInput);
-      modal.classList.remove("active");
-    } else alert("Contraseña incorrecta.");
-  } else alert("Usuario no registrado. Usa 'Registrarme'.");
-}
-
-function registrarme() {
-  const emailInput = document.getElementById("emailReg").value.trim();
-  let passwordInput = document.getElementById("passwordReg").value.trim();
-  if (!emailInput) { alert("Ingresa tu correo."); return; }
-  if (!passwordInput) passwordInput = generarContrasena();
-
-  let usuarios = JSON.parse(localStorage.getItem("usuariosApp") || "[]");
-  if (usuarios.find(u => u.email === emailInput)) {
-    alert("Usuario ya registrado. Usa 'Iniciar Sesión'."); return;
-  }
-
-  usuarios.push({ email: emailInput, password: passwordInput });
-  localStorage.setItem("usuariosApp", JSON.stringify(usuarios));
-  localStorage.setItem("usuarioActual", emailInput);
-  alert(`Cuenta creada. Tu contraseña es: ${passwordInput}`);
-  modal.classList.remove("active");
-}
-
-// Historias
 function openStory(src) {
   storyImg.src = src;
   storyModal.classList.add("active");
@@ -71,7 +31,6 @@ function openStory(src) {
 }
 function closeStory() { storyModal.classList.remove("active"); }
 
-// Reels
 function openReel(src) {
   reelVideo.src = src;
   reelVideo.play();
@@ -85,13 +44,18 @@ function closeReel() {
 // Autoplay videos feed
 const videos = document.querySelectorAll(".feed video");
 const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => { if (entry.isIntersecting) entry.target.play(); else entry.target.pause(); });
+  entries.forEach(entry => { 
+    if (entry.isIntersecting) entry.target.play(); 
+    else entry.target.pause(); 
+  });
 }, { threshold: 0.7 });
-videos.forEach(video => { observer.observe(video); video.addEventListener("click", () => openReel(video.src)); });
+videos.forEach(video => { 
+  observer.observe(video); 
+  video.addEventListener("click", () => openReel(video.src)); 
+});
 
 function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
-// Cambiar secciones con navbar
 function mostrarSeccion(id, btn) {
   document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
   document.getElementById(id).classList.add("active");
@@ -100,71 +64,47 @@ function mostrarSeccion(id, btn) {
   btn.classList.add("active");
 }
 
-function publicarPost() {
-  const archivo = document.getElementById("uploadFile").files[0];
-  const descripcion = document.getElementById("postDesc").value.trim();
-  const feed = document.querySelector(".feed");
+// ** NUEVO: Subida automática en un solo clic **
+const uploadBtn = document.getElementById("uploadBtn");
+const uploadFile = document.getElementById("uploadFile");
+const previewArea = document.getElementById("previewArea");
+const feed = document.querySelector(".feed");
 
-  if (!archivo) {
-    alert("Sube una imagen o video 📤");
-    return;
+uploadBtn.addEventListener("click", () => {
+  uploadFile.click();
+});
+
+uploadFile.addEventListener("change", () => {
+  const archivo = uploadFile.files[0];
+  if (!archivo) return;
+
+  // Vista previa
+  previewArea.innerHTML = "";
+  let element;
+  if (archivo.type.startsWith("image/")) {
+    element = document.createElement("img");
+    element.src = URL.createObjectURL(archivo);
+    element.style.maxWidth = "90%";
+  } else if (archivo.type.startsWith("video/")) {
+    element = document.createElement("video");
+    element.src = URL.createObjectURL(archivo);
+    element.controls = true;
+    element.style.maxWidth = "90%";
+    element.style.maxHeight = "60vh";
   }
+  previewArea.appendChild(element);
 
-  // Crear nuevo post
+  // Publicar automáticamente en el feed
   const nuevoPost = document.createElement("div");
   nuevoPost.classList.add("post");
-
-  if (archivo.type.startsWith("image/")) {
-    const img = document.createElement("img");
-    img.src = URL.createObjectURL(archivo);
-    img.alt = "Nueva publicación";
-    nuevoPost.appendChild(img);
-  } else if (archivo.type.startsWith("video/")) {
-    const video = document.createElement("video");
-    video.src = URL.createObjectURL(archivo);
-    video.controls = true;
-    video.loop = true;
-    video.muted = true;
-    video.style.maxHeight = "80vh";
-    nuevoPost.appendChild(video);
-  }
-
-  // Descripción
-  if (descripcion) {
-    const info = document.createElement("div");
-    info.classList.add("info");
-    info.textContent = descripcion;
-    nuevoPost.appendChild(info);
-  }
+  nuevoPost.appendChild(element.cloneNode(true));
 
   // Insertar arriba en el feed
   feed.prepend(nuevoPost);
 
-  // Resetear formulario
-  document.getElementById("uploadFile").value = "";
-  document.getElementById("postDesc").value = "";
+  // Limpiar input para poder subir nuevamente
+  uploadFile.value = "";
+  previewArea.innerHTML = "";
 
-  // Cerrar modal
-  document.getElementById("uploadModal").classList.remove("active");
-
-  alert("✅ Publicación creada con éxito");
-}
-
-function mostrarPreview() {
-  const archivo = document.getElementById("uploadFile").files[0];
-  const preview = document.getElementById("previewArea");
-  preview.innerHTML = "";
-
-  if (!archivo) return;
-
-  if (archivo.type.startsWith("image/")) {
-    const img = document.createElement("img");
-    img.src = URL.createObjectURL(archivo);
-    preview.appendChild(img);
-  } else if (archivo.type.startsWith("video/")) {
-    const video = document.createElement("video");
-    video.src = URL.createObjectURL(archivo);
-    video.controls = true;
-    preview.appendChild(video);
-  }
-}
+  alert("✅ Publicación agregada automáticamente");
+});
