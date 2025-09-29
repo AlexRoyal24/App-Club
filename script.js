@@ -1,143 +1,141 @@
-const uploadFile = document.getElementById("uploadFile");
-const feedInicio = document.getElementById("feedInicio");
-const feedPerfil = document.getElementById("feedPerfil");
+const modal = document.getElementById("loginModal");
+const loginForm = document.getElementById("loginForm");
+const registroForm = document.getElementById("registroForm");
+const storyModal = document.getElementById("storyModal");
+const storyImg = document.getElementById("storyImg");
 
-// Modal Reels
-let reelModal = document.createElement("div");
-reelModal.classList.add("reel-modal");
-reelModal.innerHTML = `
-  <button class="close-btn" onclick="closeReel()">✖</button>
-  <div id="reelContent"></div>
-`;
-document.body.appendChild(reelModal);
-
-// Selector oculto al dar click en "+"
-function triggerUpload() {
-  uploadFile.click();
-}
-
-// Subida de archivo
-uploadFile.addEventListener("change", () => {
-  const archivo = uploadFile.files[0];
-  if (!archivo) return;
-
-  const nuevoPost = crearPost(archivo);
-
-  // Agregar a Inicio y Perfil
-  feedInicio.prepend(nuevoPost.cloneNode(true));
-  feedPerfil.prepend(nuevoPost);
-
-  // Limpiar input
-  uploadFile.value = "";
-
-  alert("✅ Publicación agregada a Inicio y Perfil");
+// Mostrar modal al entrar si no hay usuario actual
+window.addEventListener("load", () => {
+  const usuarioActual = localStorage.getItem("usuarioActual");
+  if (!usuarioActual) modal.classList.add("active");
 });
 
-// Crear post
-function crearPost(archivo) {
-  const nuevoPost = document.createElement("div");
-  nuevoPost.classList.add("post");
+function mostrarLogin() {
+  loginForm.style.display = "block";
+  registroForm.style.display = "none";
+}
+function mostrarRegistro() {
+  loginForm.style.display = "none";
+  registroForm.style.display = "block";
+}
 
-  let contenido;
-  if (archivo.type.startsWith("image/")) {
-    contenido = document.createElement("img");
-    contenido.src = URL.createObjectURL(archivo);
-  } else if (archivo.type.startsWith("video/")) {
-    contenido = document.createElement("video");
-    contenido.src = URL.createObjectURL(archivo);
-    contenido.muted = true;
-    contenido.loop = false; // No loop, control manual
-    contenido.autoplay = true;
+function generarContrasena() {
+  const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+  let pass = "";
+  for (let i = 0; i < 8; i++) pass += chars.charAt(Math.floor(Math.random() * chars.length));
+  return pass;
+}
 
-    // Contador de reproducciones
-    let playCount = 0;
-    contenido.addEventListener("ended", () => {
-      playCount++;
-      if (playCount < 2) contenido.play();
-      else mostrarOverlay(nuevoPost, archivo, archivo.type);
-    });
+function iniciarSesion() {
+  const emailInput = document.getElementById("email").value.trim();
+  const passwordInput = document.getElementById("password").value.trim();
+  if (!emailInput || !passwordInput) { alert("Completa ambos campos."); return; }
 
-    // Pausar/reanudar al tocar
-    contenido.style.cursor = "pointer";
-    contenido.addEventListener("click", () => {
-      if (contenido.paused) contenido.play();
-      else contenido.pause();
-    });
+  let usuarios = JSON.parse(localStorage.getItem("usuariosApp") || "[]");
+  let usuarioExistente = usuarios.find(u => u.email === emailInput);
+
+  if (usuarioExistente) {
+    if (passwordInput === usuarioExistente.password) {
+      alert(`Bienvenido de nuevo ${emailInput} ✨`);
+      localStorage.setItem("usuarioActual", emailInput);
+      modal.classList.remove("active");
+    } else alert("Contraseña incorrecta.");
+  } else alert("Usuario no registrado. Usa 'Registrarme'.");
+}
+
+function registrarme() {
+  const emailInput = document.getElementById("emailReg").value.trim();
+  let passwordInput = document.getElementById("passwordReg").value.trim();
+  if (!emailInput) { alert("Ingresa tu correo."); return; }
+  if (!passwordInput) passwordInput = generarContrasena();
+
+  let usuarios = JSON.parse(localStorage.getItem("usuariosApp") || "[]");
+  if (usuarios.find(u => u.email === emailInput)) {
+    alert("Usuario ya registrado. Usa 'Iniciar Sesión'."); return;
   }
 
-  // Abrir modal al tocar imagen
-  if (archivo.type.startsWith("image/")) {
-    contenido.style.cursor = "pointer";
-    contenido.addEventListener("click", () => openReel(archivo, archivo.type));
-  }
-
-  const info = document.createElement("div");
-  info.classList.add("info");
-  const usuario = localStorage.getItem("usuarioActual") || "Usuario";
-  info.textContent = `@${usuario}`;
-
-  nuevoPost.appendChild(contenido);
-  nuevoPost.appendChild(info);
-  return nuevoPost;
+  usuarios.push({ email: emailInput, password: passwordInput });
+  localStorage.setItem("usuariosApp", JSON.stringify(usuarios));
+  localStorage.setItem("usuarioActual", emailInput);
+  alert(`Cuenta creada. Tu contraseña es: ${passwordInput}`);
+  modal.classList.remove("active");
 }
 
-// Overlay "Ver de nuevo?"
-function mostrarOverlay(post, archivo, tipo) {
-  const overlay = document.createElement("div");
-  overlay.classList.add("overlay");
-  overlay.textContent = "Ver de nuevo?";
-  overlay.addEventListener("click", () => openReel(archivo, tipo));
-  post.appendChild(overlay);
-
-  // Estilo del overlay
-  overlay.style.position = "absolute";
-  overlay.style.top = "50%";
-  overlay.style.left = "50%";
-  overlay.style.transform = "translate(-50%, -50%)";
-  overlay.style.background = "rgba(0,0,0,0.7)";
-  overlay.style.color = "#fff";
-  overlay.style.padding = "15px 25px";
-  overlay.style.borderRadius = "10px";
-  overlay.style.fontSize = "18px";
-  overlay.style.cursor = "pointer";
+// Historias
+function openStory(src) {
+  storyImg.src = src;
+  storyModal.classList.add("active");
+  setTimeout(closeStory, 4000);
 }
+function closeStory() { storyModal.classList.remove("active"); }
 
-// Modal Reel
-function openReel(archivo, tipo) {
-  const reelContent = document.getElementById("reelContent");
-  reelContent.innerHTML = "";
-
-  if (tipo.startsWith("image/")) {
-    const img = document.createElement("img");
-    img.src = URL.createObjectURL(archivo);
-    img.style.maxWidth = "90%";
-    img.style.maxHeight = "90%";
-    reelContent.appendChild(img);
-  } else if (tipo.startsWith("video/")) {
-    const video = document.createElement("video");
-    video.src = URL.createObjectURL(archivo);
-    video.controls = true;
-    video.autoplay = true;
-    video.style.maxWidth = "90%";
-    video.style.maxHeight = "90%";
-    reelContent.appendChild(video);
-  }
-
-  reelModal.classList.add("active");
-}
-
-// Cerrar modal
-function closeReel() {
-  const video = reelModal.querySelector("video");
-  if (video) video.pause();
-  reelModal.classList.remove("active");
-}
-
-// Cambiar secciones
+// Navbar inferior
 function mostrarSeccion(id, btn) {
   document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 
   document.querySelectorAll(".bottom-nav button").forEach(b => b.classList.remove("active"));
   btn.classList.add("active");
+}
+
+// Activar subida de archivo desde el botón +
+function triggerUpload() {
+  document.getElementById("uploadFile").click();
+}
+
+// Subir publicación
+const uploadInput = document.getElementById("uploadFile");
+uploadInput.addEventListener("change", () => {
+  const archivo = uploadInput.files[0];
+  if (!archivo) return;
+
+  agregarPost(archivo);
+  uploadInput.value = ""; // reset
+});
+
+function agregarPost(archivo) {
+  const feeds = [document.getElementById("feedInicio"), document.getElementById("feedPerfil")];
+
+  feeds.forEach(feed => {
+    const post = document.createElement("div");
+    post.className = "post";
+
+    let media;
+    if (archivo.type.startsWith("image/")) {
+      media = document.createElement("img");
+      media.src = URL.createObjectURL(archivo);
+    } else if (archivo.type.startsWith("video/")) {
+      media = document.createElement("video");
+      media.src = URL.createObjectURL(archivo);
+      media.controls = true;
+      media.loop = true;
+      media.muted = true;
+      media.style.maxHeight = "400px"; // tamaño tipo Instagram
+    }
+    media.classList.add("post-media");
+    post.appendChild(media);
+
+    // Botones tipo Instagram
+    const actions = document.createElement("div");
+    actions.className = "post-actions";
+    actions.innerHTML = `
+      <button onclick="alert('Te gustó ❤️')">❤️</button>
+      <button onclick="alert('Comentar 💬')">💬</button>
+      <button onclick="alert('Compartir ↪️')">↪️</button>
+      <button onclick="verDeNuevo(this)">👁 Ver de nuevo?</button>
+    `;
+    post.appendChild(actions);
+
+    feed.prepend(post);
+  });
+}
+
+// Ver de nuevo (abre modal o resalta)
+function verDeNuevo(btn) {
+  const post = btn.closest(".post");
+  const media = post.querySelector("video, img");
+  if (media.tagName === "VIDEO") {
+    media.currentTime = 0;
+    media.play();
+  }
 }
