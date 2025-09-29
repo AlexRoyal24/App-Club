@@ -99,3 +99,53 @@ function mostrarSeccion(id, btn) {
   document.querySelectorAll(".bottom-nav button").forEach(b => b.classList.remove("active"));
   btn.classList.add("active");
 }
+
+function publicarPost() {
+  const archivo = document.getElementById("uploadFile").files[0];
+  const descripcion = document.getElementById("postDesc").value.trim();
+  const feed = document.querySelector(".feed");
+
+  if (!archivo) {
+    alert("Sube una imagen o video 📤");
+    return;
+  }
+
+  // Crear nuevo post
+  const nuevoPost = document.createElement("div");
+  nuevoPost.classList.add("post");
+
+  if (archivo.type.startsWith("image/")) {
+    const img = document.createElement("img");
+    img.src = URL.createObjectURL(archivo);
+    img.alt = "Nueva publicación";
+    nuevoPost.appendChild(img);
+  } else if (archivo.type.startsWith("video/")) {
+    const video = document.createElement("video");
+    video.src = URL.createObjectURL(archivo);
+    video.controls = true;
+    video.loop = true;
+    video.muted = true;
+    video.style.maxHeight = "80vh";
+    nuevoPost.appendChild(video);
+  }
+
+  // Descripción
+  if (descripcion) {
+    const info = document.createElement("div");
+    info.classList.add("info");
+    info.textContent = descripcion;
+    nuevoPost.appendChild(info);
+  }
+
+  // Insertar arriba en el feed
+  feed.prepend(nuevoPost);
+
+  // Resetear formulario
+  document.getElementById("uploadFile").value = "";
+  document.getElementById("postDesc").value = "";
+
+  // Cerrar modal
+  document.getElementById("uploadModal").classList.remove("active");
+
+  alert("✅ Publicación creada con éxito");
+}
