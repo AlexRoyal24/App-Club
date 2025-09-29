@@ -149,3 +149,22 @@ function publicarPost() {
 
   alert("✅ Publicación creada con éxito");
 }
+
+function mostrarPreview() {
+  const archivo = document.getElementById("uploadFile").files[0];
+  const preview = document.getElementById("previewArea");
+  preview.innerHTML = "";
+
+  if (!archivo) return;
+
+  if (archivo.type.startsWith("image/")) {
+    const img = document.createElement("img");
+    img.src = URL.createObjectURL(archivo);
+    preview.appendChild(img);
+  } else if (archivo.type.startsWith("video/")) {
+    const video = document.createElement("video");
+    video.src = URL.createObjectURL(archivo);
+    video.controls = true;
+    preview.appendChild(video);
+  }
+}
