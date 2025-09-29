@@ -27,32 +27,62 @@
     </div>
   </div>
 
+  <!-- Input oculto para subir archivo -->
+  <input type="file" id="uploadFile" accept="image/*,video/*" style="display:none;" />
+
   <!-- Secciones principales -->
   <main>
     <section id="inicio" class="section active">
+      <h2>🏠 Inicio</h2>
+      <!-- Historias -->
+      <div class="stories">
+        <div class="story" onclick="openStory('img/foto1.jpg')">
+          <img src="img/foto1.jpg" alt="Historia de Alex">
+          <p>Alex</p>
+        </div>
+        <div class="story" onclick="openStory('img/foto2.jpg')">
+          <img src="img/foto2.jpg" alt="Historia de Naunet">
+          <p>Naunet</p>
+        </div>
+        <div class="story" onclick="openStory('img/foto3.jpg')">
+          <img src="img/foto3.jpg" alt="Historia de Amigo">
+          <p>Amigo</p>
+        </div>
+      </div>
+
+      <!-- Feed Inicio -->
       <div class="feed" id="feedInicio"></div>
     </section>
 
-    <section id="perfil" class="section">
-      <div class="feed" id="feedPerfil"></div>
+    <section id="agregar" class="section">
+      <h2>➕ Agregar Publicación</h2>
+      <p>Se subirá al iniciar el selector de archivos desde el botón +.</p>
     </section>
 
     <section id="buscar" class="section">
       <h2>🔍 Buscar</h2>
       <p>Aquí se mostrarán los resultados de búsqueda.</p>
     </section>
+
+    <section id="perfil" class="section">
+      <h2>👤 Perfil</h2>
+      <!-- Feed Perfil -->
+      <div class="feed" id="feedPerfil"></div>
+    </section>
   </main>
 
   <!-- Navbar inferior -->
   <nav class="bottom-nav">
     <button class="active" onclick="mostrarSeccion('inicio', this)">🏠</button>
-    <button id="btnAgregar" onclick="triggerUpload()">➕</button>
+    <button onclick="triggerUpload()">➕</button>
     <button onclick="mostrarSeccion('buscar', this)">🔍</button>
     <button onclick="mostrarSeccion('perfil', this)">👤</button>
   </nav>
 
-  <!-- Input oculto para subir archivos -->
-  <input type="file" id="uploadFile" accept="image/*,video/*" style="display:none">
+  <!-- Modal historias -->
+  <div class="story-modal" id="storyModal">
+    <img id="storyImg" src="" alt="Historia">
+  </div>
 
   <script src="script.js"></script>
 </body>
