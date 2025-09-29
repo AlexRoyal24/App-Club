@@ -90,3 +90,12 @@ const observer = new IntersectionObserver((entries) => {
 videos.forEach(video => { observer.observe(video); video.addEventListener("click", () => openReel(video.src)); });
 
 function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+// Cambiar secciones con navbar
+function mostrarSeccion(id, btn) {
+  document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+
+  document.querySelectorAll(".bottom-nav button").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+}
