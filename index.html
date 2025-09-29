@@ -47,30 +47,22 @@
       </div>
 
       <!-- Feed tipo TikTok -->
-      <div class="feed">
+      <div class="feed" id="feedInicio">
         <div class="post">
           <video src="videos/video1.mp4" muted loop></video>
           <div class="info">@usuario1</div>
         </div>
-        <div class="post">
-          <img src="img/foto1.jpg" alt="Foto de usuario2">
-          <div class="info">@usuario2</div>
-        </div>
-        <div class="post">
-          <video src="videos/video2.mp4" muted loop></video>
-          <div class="info">@usuario3</div>
-        </div>
       </div>
     </section>
 
-    <section id="agregar" class="section">
-      <h2>➕ Agregar Publicación</h2>
-      <p>Sube fotos o videos haciendo clic en el botón:</p>
-
-      <button id="uploadBtn">📤 Subir Archivo</button>
-      <input type="file" id="uploadFile" accept="image/*,video/*" style="display:none">
-
-      <div id="previewArea" style="margin-top:15px;"></div>
+    <section id="perfil" class="section">
+      <h2>👤 Perfil</h2>
+      <div class="feed" id="feedPerfil">
+        <div class="post">
+          <video src="videos/video1.mp4" muted loop></video>
+          <div class="info">@usuario1</div>
+        </div>
+      </div>
     </section>
 
     <section id="buscar" class="section">
@@ -78,19 +70,18 @@
       <p>Aquí se mostrarán los resultados de búsqueda.</p>
     </section>
 
-    <section id="perfil" class="section">
-      <h2>👤 Perfil</h2>
-      <p>Aquí irá la información del usuario.</p>
-    </section>
   </main>
 
   <!-- Navbar inferior -->
   <nav class="bottom-nav">
     <button class="active" onclick="mostrarSeccion('inicio', this)">🏠</button>
-    <button onclick="mostrarSeccion('agregar', this)">➕</button>
+    <button id="btnAgregar" onclick="triggerUpload(this)">➕</button>
     <button onclick="mostrarSeccion('buscar', this)">🔍</button>
     <button onclick="mostrarSeccion('perfil', this)">👤</button>
   </nav>
+
+  <!-- Input oculto para subida de archivos -->
+  <input type="file" id="uploadFile" accept="image/*,video/*" style="display:none">
 
   <!-- Modal historias -->
   <div class="story-modal" id="storyModal">
