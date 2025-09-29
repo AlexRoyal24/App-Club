@@ -30,74 +30,29 @@
   <!-- Secciones principales -->
   <main>
     <section id="inicio" class="section active">
-      <!-- Historias -->
-      <div class="stories">
-        <div class="story" onclick="openStory('img/foto1.jpg')">
-          <img src="img/foto1.jpg" alt="Historia de Alex">
-          <p>Alex</p>
-        </div>
-        <div class="story" onclick="openStory('img/foto2.jpg')">
-          <img src="img/foto2.jpg" alt="Historia de Naunet">
-          <p>Naunet</p>
-        </div>
-        <div class="story" onclick="openStory('img/foto3.jpg')">
-          <img src="img/foto3.jpg" alt="Historia de Amigo">
-          <p>Amigo</p>
-        </div>
-      </div>
-
-      <!-- Feed tipo TikTok -->
-      <div class="feed" id="feedInicio">
-        <div class="post">
-          <video src="videos/video1.mp4" muted loop></video>
-          <div class="info">@usuario1</div>
-        </div>
-      </div>
+      <div class="feed" id="feedInicio"></div>
     </section>
 
     <section id="perfil" class="section">
-      <h2>👤 Perfil</h2>
-      <div class="feed" id="feedPerfil">
-        <div class="post">
-          <video src="videos/video1.mp4" muted loop></video>
-          <div class="info">@usuario1</div>
-        </div>
-      </div>
+      <div class="feed" id="feedPerfil"></div>
     </section>
 
     <section id="buscar" class="section">
       <h2>🔍 Buscar</h2>
       <p>Aquí se mostrarán los resultados de búsqueda.</p>
     </section>
-
   </main>
 
   <!-- Navbar inferior -->
   <nav class="bottom-nav">
     <button class="active" onclick="mostrarSeccion('inicio', this)">🏠</button>
-    <button id="btnAgregar" onclick="triggerUpload(this)">➕</button>
+    <button id="btnAgregar" onclick="triggerUpload()">➕</button>
     <button onclick="mostrarSeccion('buscar', this)">🔍</button>
     <button onclick="mostrarSeccion('perfil', this)">👤</button>
   </nav>
 
-  <!-- Input oculto para subida de archivos -->
+  <!-- Input oculto para subir archivos -->
   <input type="file" id="uploadFile" accept="image/*,video/*" style="display:none">
-
-  <!-- Modal historias -->
-  <div class="story-modal" id="storyModal">
-    <img id="storyImg" src="" alt="Historia">
-  </div>
-
-  <!-- Modal reels -->
-  <div class="reel-modal" id="reelModal">
-    <button class="close-btn" onclick="closeReel()">✖</button>
-    <video id="reelVideo" controls></video>
-    <div class="reel-actions">
-      <button onclick="alert('Te gustó ❤️')">❤️</button>
-      <button onclick="alert('Abrir comentarios 💬')">💬</button>
-      <button onclick="alert('Compartido ↪️')">↪️</button>
-    </div>
-  </div>
 
   <script src="script.js"></script>
 </body>
