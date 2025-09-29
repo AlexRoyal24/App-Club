@@ -11,6 +11,15 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Secciones */
+.section {
+  display: none;
+  padding: 20px;
+  height: calc(100vh - 70px);
+  overflow-y: auto;
+}
+.section.active { display: block; animation: fadeIn 0.4s ease; }
+
 /* Historias */
 .stories {
   display: flex;
@@ -19,9 +28,8 @@ body {
   padding: 15px;
   background: #111;
   border-bottom: 1px solid #333;
-  position: fixed;
+  position: sticky;
   top: 0;
-  width: 100%;
   z-index: 10;
 }
 .story { flex: 0 0 auto; text-align: center; cursor: pointer; }
@@ -33,8 +41,6 @@ body {
   height: 100vh;
   overflow-y: scroll;
   scroll-snap-type: y mandatory;
-  margin-top: 100px;
-  margin-bottom: 60px;
 }
 .post {
   position: relative;
@@ -56,20 +62,33 @@ body {
   border-radius: 5px;
 }
 
-/* Navbar */
-nav {
+/* Navbar inferior */
+.bottom-nav {
   position: fixed;
   bottom: 0;
   width: 100%;
-  background: rgba(0,0,0,0.9);
+  background: rgba(0,0,0,0.95);
   display: flex;
   justify-content: space-around;
   padding: 10px 0;
   border-top: 1px solid #333;
   z-index: 20;
 }
-nav a { color: #fff; text-decoration: none; font-size: 20px; transition: transform 0.2s; cursor: pointer; }
-nav a:hover { transform: scale(1.2); }
+.bottom-nav button {
+  background: none;
+  border: none;
+  outline: none;
+  color: #aaa;
+  font-size: 22px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.bottom-nav button.active {
+  color: #00c6ff;
+  font-weight: bold;
+  text-shadow: 0 0 10px #00c6ff;
+}
+.bottom-nav button:hover { transform: scale(1.2); color: #fff; }
 
 /* Modal pantalla completa */
 .modal {
