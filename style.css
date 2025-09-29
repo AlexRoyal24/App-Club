@@ -297,3 +297,37 @@ body {
   color: #fff;
   font-size: 18px;
 }
+
+.post {
+  position: relative;
+  margin: 20px auto;
+  width: 95%;
+  max-width: 500px;
+  background: #111;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.post-media {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 10px;
+}
+
+.post-actions {
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0;
+  background: rgba(0,0,0,0.7);
+}
+
+.post-actions button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.post-actions button:hover { transform: scale(1.2); }
