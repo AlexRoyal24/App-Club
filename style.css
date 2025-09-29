@@ -198,3 +198,29 @@ body {
   transition: transform 0.2s, background 0.3s;
 }
 .reel-actions button:hover { background: #ff0050; transform: scale(1.2); }
+
+.upload-btn {
+  display: inline-block;
+  padding: 12px 25px;
+  background: #ff0050;
+  color: #fff;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background 0.3s, transform 0.2s;
+}
+.upload-btn:hover {
+  background: #ff3366;
+  transform: scale(1.05);
+}
+
+#previewArea {
+  margin-top: 15px;
+}
+#previewArea img, 
+#previewArea video {
+  max-width: 90%;
+  max-height: 250px;
+  border-radius: 10px;
+  margin-top: 10px;
+}
