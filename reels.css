@@ -1,50 +1,121 @@
-/* Perfil TikTok */
-.feed.tiktok {
-  height: 100vh;
-  overflow-y: scroll;
-  scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
-}
-
-.feed.tiktok .post {
-  position: relative;
-  height: 100vh;
-  scroll-snap-align: start;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #000;
-}
-
-.feed.tiktok .post video,
-.feed.tiktok .post img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.feed.tiktok .post-actions {
-  position: absolute;
-  right: 20px;
-  bottom: 100px;
+/* --- Feed Perfil estilo TikTok --- */
+#feedPerfil {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  overflow-y: auto;
+  height: calc(100vh - 60px); /* Ajusta según altura de navbar */
+  scroll-behavior: smooth;
+  padding: 10px;
 }
 
-.feed.tiktok .post-actions button {
+.post {
+  position: relative;
+  width: 100%;
+  background: #000;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.post-media {
+  width: 100%;
+  max-height: 80vh;
+  object-fit: cover;
+  display: block;
+  border-radius: 15px;
+}
+
+/* Botón mute individual */
+.mute-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.mute-btn:hover {
+  background: rgba(0,0,0,0.7);
+}
+
+/* Acciones (like, comentar, compartir) */
+.post-actions {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.post-actions button {
   background: rgba(0,0,0,0.5);
+  color: #fff;
   border: none;
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  color: #fff;
-  font-size: 22px;
+  width: 45px;
+  height: 45px;
+  font-size: 18px;
   cursor: pointer;
-  transition: transform 0.2s, background 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
 }
 
-.feed.tiktok .post-actions button:hover {
-  background: #ff0050;
-  transform: scale(1.2);
+.post-actions button:hover {
+  background: rgba(0,0,0,0.8);
+}
+
+/* Historias */
+.stories {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.story {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+.story img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 2px solid #ff0044;
+  object-fit: cover;
+}
+
+.story p {
+  margin: 5px 0 0;
+  font-size: 12px;
+  color: #fff;
+  text-align: center;
+}
+
+/* Modal historias */
+.story-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  display: none;
+}
+
+.story-modal.active {
+  display: flex;
+}
+
+.story-modal img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 15px;
 }
