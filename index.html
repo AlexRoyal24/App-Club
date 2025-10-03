@@ -9,7 +9,7 @@
 </head>
 <body>
 
-  <!-- Modal pantalla completa para login/registro -->
+  <!-- Modal flotante login/registro -->
   <div class="modal" id="loginModal">
     <h2>Bienvenido a MiniRed Social</h2>
     <button onclick="mostrarLogin()">Iniciar Sesión</button>
@@ -34,8 +34,10 @@
 
   <!-- Secciones principales -->
   <main>
+    <!-- Inicio -->
     <section id="inicio" class="section active">
       <h2>🏠 Inicio</h2>
+      <!-- Historias -->
       <div class="stories">
         <div class="story" onclick="openStory('img/foto1.jpg')">
           <img src="img/foto1.jpg" alt="Historia de Alex">
@@ -49,29 +51,34 @@
       <div class="feed" id="feedInicio"></div>
     </section>
 
+    <!-- Agregar -->
     <section id="agregar" class="section">
       <h2>➕ Agregar Publicación</h2>
       <p>Usa el botón "+" para subir fotos o videos.</p>
     </section>
 
+    <!-- Buscar -->
     <section id="buscar" class="section">
       <h2>🔍 Buscar</h2>
       <p>Aquí se mostrarán los resultados de búsqueda.</p>
     </section>
 
+    <!-- Perfil estilo TikTok -->
     <section id="perfil" class="section">
       <h2>👤 Perfil</h2>
-      <div id="perfilInfo"></div>
-      <div class="feed" id="feedPerfil"></div>
+      <div id="perfilInfo">
+        <p>Nick: <span id="usuarioNick">Usuario</span></p>
+      </div>
+      <div class="feed tiktok" id="feedPerfil"></div>
     </section>
   </main>
 
   <!-- Navbar inferior -->
   <nav class="bottom-nav">
-    <button data-target="inicio" class="active">🏠</button>
-    <button id="uploadBtn">➕</button>
-    <button data-target="buscar">🔍</button>
-    <button data-target="perfil">👤</button>
+    <button class="active" onclick="mostrarSeccion('inicio', this)">🏠</button>
+    <button onclick="triggerUpload()">➕</button>
+    <button onclick="mostrarSeccion('buscar', this)">🔍</button>
+    <button onclick="mostrarSeccion('perfil', this)">👤</button>
   </nav>
 
   <!-- Modal historias -->
