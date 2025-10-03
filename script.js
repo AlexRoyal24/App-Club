@@ -180,7 +180,7 @@ function openStory(src) {
   setTimeout(() => storyModal.classList.remove("active"), 4000);
 }
 
-// Audio: reproducir solo videos de la sección activa
+// Audio: reproducir solo videos de la sección activa y pausar secciones inactivas
 function actualizarAudio() {
   const secciones = ["inicio", "perfil"];
   secciones.forEach(id => {
@@ -189,9 +189,19 @@ function actualizarAudio() {
     const activo = seccion.classList.contains("active");
 
     feed.querySelectorAll("video").forEach(video => {
-      if (activo) video.play();
-      else video.pause();
+      if (activo) {
+        // reproducir solo si está visible
+        const rect = video.getBoundingClientRect();
+        if (rect.top >= 0 && rect.bottom <= window.innerHeight) video.play();
+      } else {
+        video.pause();
+      }
       // No mute por defecto, usa volumen del dispositivo
     });
   });
 }
+
+// Llamar actualizarAudio al cambiar sección
+document.querySelectorAll(".bottom-nav button").forEach(btn => {
+  btn.addEventListener("click", () => setTimeout(actualizarAudio, 50));
+});
