@@ -1,3 +1,4 @@
+/* Reset y base */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
   font-family: Arial, sans-serif;
@@ -36,31 +37,95 @@ body {
 .story img { width: 60px; height: 60px; border-radius: 50%; border: 3px solid #ff0050; object-fit: cover; }
 .story p { font-size: 12px; margin-top: 5px; }
 
-/* Feed tipo TikTok */
+/* Feed */
 .feed {
-  height: 100vh;
-  overflow-y: scroll;
-  scroll-snap-type: y mandatory;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .post {
   position: relative;
-  height: 100vh;
+  margin: 20px auto;
+  width: 95%;
+  max-width: 500px;
+  background: #111;
+  border-radius: 15px;
+  overflow: hidden;
+}
+.post-media {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 15px;
+  cursor: pointer;
+  object-fit: cover;
+}
+
+/* Acciones horizontales (feed) */
+.post-actions.horizontal {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+  background: rgba(0,0,0,0.6);
+}
+.post-actions.horizontal button {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.post-actions.horizontal button:hover { transform: scale(1.2); color: #ff0050; }
+
+/* Modal Reels */
+.reel-modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: #000;
   display: flex;
   align-items: center;
   justify-content: center;
-  scroll-snap-align: start;
-  background: #111;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 100;
 }
-.post video, .post img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
-.post .info {
+.reel-modal.active { opacity: 1; pointer-events: all; }
+.reel-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.reel-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Acciones verticales en reels */
+.reel-actions {
   position: absolute;
-  bottom: 80px;
-  left: 20px;
-  font-size: 18px;
-  background: rgba(0,0,0,0.5);
-  padding: 5px 10px;
-  border-radius: 5px;
+  right: 15px;
+  bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
 }
+.reel-actions button {
+  background: rgba(0,0,0,0.6);
+  border: none;
+  border-radius: 50%;
+  width: 50px; height: 50px;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.3s;
+}
+.reel-actions button:hover { background: #ff0050; transform: scale(1.2); }
 
 /* Navbar inferior */
 .bottom-nav {
@@ -72,7 +137,7 @@ body {
   justify-content: space-around;
   padding: 10px 0;
   border-top: 1px solid #333;
-  z-index: 20;
+  z-index: 200;
 }
 .bottom-nav button {
   background: none;
@@ -89,286 +154,3 @@ body {
   text-shadow: 0 0 10px #00c6ff;
 }
 .bottom-nav button:hover { transform: scale(1.2); color: #fff; }
-
-/* Modal pantalla completa */
-.modal {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.95);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.5s ease;
-  z-index: 50;
-  flex-direction: column;
-  text-align: center;
-}
-.modal.active { opacity: 1; pointer-events: all; }
-
-.modal h2 { margin-bottom: 20px; font-size: 28px; }
-.modal button {
-  margin: 10px 0;
-  padding: 15px 40px;
-  border: none;
-  border-radius: 10px;
-  background: #ff0050;
-  color: #fff;
-  font-size: 20px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-.modal button:hover { background: #ff3366; }
-.modal input {
-  width: 80%;
-  padding: 12px;
-  margin: 10px 0;
-  border: none;
-  border-radius: 5px;
-  outline: none;
-  font-size: 16px;
-}
-.form-container { margin-top: 20px; display: none; }
-
-/* Modal historias */
-.story-modal {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.5s ease;
-  z-index: 40;
-}
-.story-modal.active { opacity: 1; pointer-events: all; }
-.story-modal img { max-width: 90%; max-height: 90%; border-radius: 10px; }
-
-/* Modal reels */
-.reel-modal {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.95);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.5s ease;
-  z-index: 50;
-}
-.reel-modal.active { opacity: 1; pointer-events: all; }
-.reel-modal video { width: 100%; height: 100%; object-fit: cover; }
-
-.close-btn {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: #ff0050;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  color: #fff;
-}
-.reel-actions {
-  position: absolute;
-  right: 20px;
-  bottom: 100px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  align-items: center;
-}
-.reel-actions button {
-  background: rgba(0,0,0,0.6);
-  border: none;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  font-size: 22px;
-  color: #fff;
-  cursor: pointer;
-  transition: transform 0.2s, background 0.3s;
-}
-.reel-actions button:hover { background: #ff0050; transform: scale(1.2); }
-
-.upload-btn {
-  display: inline-block;
-  padding: 12px 25px;
-  background: #ff0050;
-  color: #fff;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 18px;
-  transition: background 0.3s, transform 0.2s;
-}
-.upload-btn:hover {
-  background: #ff3366;
-  transform: scale(1.05);
-}
-
-#previewArea {
-  margin-top: 15px;
-}
-#previewArea img, 
-#previewArea video {
-  max-width: 90%;
-  max-height: 250px;
-  border-radius: 10px;
-  margin-top: 10px;
-}
-
-/* Modal Reels */
-.reel-modal {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.95);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.5s ease;
-  z-index: 50;
-  flex-direction: column;
-}
-.reel-modal.active {
-  opacity: 1;
-  pointer-events: all;
-}
-.reel-modal img, .reel-modal video {
-  border-radius: 10px;
-}
-.close-btn {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: #ff0050;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  color: #fff;
-  font-size: 18px;
-}
-
-.overlay {
-  pointer-events: all;
-}
-
-.reel-modal {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.95);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.5s ease;
-  z-index: 50;
-  flex-direction: column;
-}
-.reel-modal.active {
-  opacity: 1;
-  pointer-events: all;
-}
-.reel-modal img, .reel-modal video {
-  border-radius: 10px;
-}
-.close-btn {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: #ff0050;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  color: #fff;
-  font-size: 18px;
-}
-
-.post {
-  position: relative;
-  margin: 20px auto;
-  width: 95%;
-  max-width: 500px;
-  background: #111;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.post-media {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 10px;
-}
-
-.post-actions {
-  display: flex;
-  justify-content: space-around;
-  padding: 8px 0;
-  background: rgba(0,0,0,0.7);
-}
-
-.post-actions button {
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 18px;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-.post-actions button:hover { transform: scale(1.2); }
-
-.post {
-  position: relative;
-  margin: 20px auto;
-  max-width: 500px;
-  border-radius: 15px;
-  overflow: hidden;
-  background: #000;
-}
-
-.post-media {
-  width: 100%;
-  border-radius: 15px;
-  object-fit: cover;
-  cursor: pointer;
-}
-
-.post-actions {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.post-actions button {
-  background: rgba(0,0,0,0.5);
-  border: none;
-  border-radius: 50%;
-  width: 45px;
-  height: 45px;
-  color: #fff;
-  font-size: 20px;
-  cursor: pointer;
-  transition: transform 0.2s, background 0.3s;
-}
-.post-actions button:hover {
-  background: #ff0050;
-  transform: scale(1.2);
-}
