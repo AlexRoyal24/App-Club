@@ -1,4 +1,4 @@
-/* FEED TIPO TIKTOK EN PERFIL */
+/* Perfil TikTok */
 .feed.tiktok {
   height: 100vh;
   overflow-y: scroll;
@@ -26,7 +26,7 @@
 .feed.tiktok .post-actions {
   position: absolute;
   right: 20px;
-  bottom: 80px;
+  bottom: 100px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -43,6 +43,7 @@
   cursor: pointer;
   transition: transform 0.2s, background 0.3s;
 }
+
 .feed.tiktok .post-actions button:hover {
   background: #ff0050;
   transform: scale(1.2);
