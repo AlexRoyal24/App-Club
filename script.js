@@ -88,9 +88,8 @@ uploadInput.addEventListener("change", () => {
   uploadInput.value = "";
 });
 
-// Feed Inicio
-const feedInicio = document.getElementById("feedInicio");
-function agregarPostInicio(archivo) {
+// Crear post
+function crearPost(archivo) {
   const post = document.createElement("div");
   post.className = "post";
 
@@ -100,12 +99,38 @@ function agregarPostInicio(archivo) {
 
   media.src = URL.createObjectURL(archivo);
   media.classList.add("post-media");
+
   if (archivo.type.startsWith("video/")) {
     media.autoplay = true;
-    media.muted = true;
+    media.muted = false; // usa volumen del dispositivo
     media.loop = true;
     media.controls = false;
+    
+    // Botón mute individual
+    const muteBtn = document.createElement("button");
+    muteBtn.className = "mute-btn";
+    muteBtn.innerText = "🔇";
+    muteBtn.style.position = "absolute";
+    muteBtn.style.bottom = "10px";
+    muteBtn.style.right = "10px";
+    muteBtn.style.background = "rgba(0,0,0,0.5)";
+    muteBtn.style.color = "#fff";
+    muteBtn.style.border = "none";
+    muteBtn.style.borderRadius = "50%";
+    muteBtn.style.width = "40px";
+    muteBtn.style.height = "40px";
+    muteBtn.style.fontSize = "20px";
+    muteBtn.style.cursor = "pointer";
+
+    muteBtn.onclick = (e) => {
+      e.stopPropagation();
+      media.muted = !media.muted;
+      muteBtn.innerText = media.muted ? "🔇" : "🔊";
+    };
+
+    post.appendChild(muteBtn);
   }
+
   post.appendChild(media);
 
   const actions = document.createElement("div");
@@ -117,38 +142,20 @@ function agregarPostInicio(archivo) {
   `;
   post.appendChild(actions);
 
+  return post;
+}
+
+// Feed Inicio
+const feedInicio = document.getElementById("feedInicio");
+function agregarPostInicio(archivo) {
+  const post = crearPost(archivo);
   feedInicio.prepend(post);
 }
 
 // Feed Perfil estilo TikTok
 const feedPerfil = document.getElementById("feedPerfil");
 function agregarPostPerfil(archivo) {
-  const post = document.createElement("div");
-  post.className = "post";
-
-  let media;
-  if (archivo.type.startsWith("image/")) media = document.createElement("img");
-  else if (archivo.type.startsWith("video/")) media = document.createElement("video");
-
-  media.src = URL.createObjectURL(archivo);
-  media.classList.add("post-media");
-  if (archivo.type.startsWith("video/")) {
-    media.autoplay = true;
-    media.muted = true;
-    media.loop = true;
-    media.controls = false;
-  }
-  post.appendChild(media);
-
-  const actions = document.createElement("div");
-  actions.className = "post-actions";
-  actions.innerHTML = `
-    <button onclick="alert('❤️ Me gusta')">❤️</button>
-    <button onclick="alert('💬 Comentar')">💬</button>
-    <button onclick="alert('↪️ Compartir')">↪️</button>
-  `;
-  post.appendChild(actions);
-
+  const post = crearPost(archivo);
   feedPerfil.prepend(post);
 }
 
@@ -171,62 +178,18 @@ function openStory(src) {
   setTimeout(() => storyModal.classList.remove("active"), 4000);
 }
 
-// Botones de sonido flotantes
-function crearBotonSonido(seccionId, feedId) {
-  const seccion = document.getElementById(seccionId);
-  const feed = document.getElementById(feedId);
-
-  const boton = document.createElement("button");
-  boton.innerText = "🔊";
-  boton.className = "sound-btn";
-  boton.style.position = "fixed";
-  boton.style.top = "20px";
-  boton.style.right = "20px";
-  boton.style.zIndex = "100";
-  boton.style.background = "rgba(0,0,0,0.5)";
-  boton.style.color = "#fff";
-  boton.style.border = "none";
-  boton.style.borderRadius = "50%";
-  boton.style.width = "50px";
-  boton.style.height = "50px";
-  boton.style.fontSize = "24px";
-  boton.style.cursor = "pointer";
-
-  let sonidoActivo = false;
-
-  boton.onclick = () => {
-    sonidoActivo = !sonidoActivo;
-    feed.querySelectorAll("video").forEach(video => video.muted = !sonidoActivo);
-  };
-
-  document.body.appendChild(boton);
-  seccion.dataset.botonSonido = boton;
-}
-
-// Crear botones
-crearBotonSonido("inicio", "feedInicio");
-crearBotonSonido("perfil", "feedPerfil");
-
-// Actualizar audio y visibilidad
+// Audio: reproducir solo videos de la sección activa
 function actualizarAudio() {
   const secciones = ["inicio", "perfil"];
   secciones.forEach(id => {
     const seccion = document.getElementById(id);
     const feed = document.getElementById(id === "inicio" ? "feedInicio" : "feedPerfil");
-    const boton = seccion.dataset.botonSonido;
-
     const activo = seccion.classList.contains("active");
-    boton.style.display = activo ? "block" : "none";
 
     feed.querySelectorAll("video").forEach(video => {
       if (activo) video.play();
       else video.pause();
-      video.muted = !activo; // mute por defecto según sección
+      // Por defecto, usa el volumen del dispositivo
     });
   });
 }
-
-// Actualizar al cambiar sección
-document.querySelectorAll(".bottom-nav button").forEach(btn => {
-  btn.addEventListener("click", () => setTimeout(actualizarAudio, 50));
-});
