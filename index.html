@@ -9,7 +9,7 @@
 </head>
 <body>
 
-  <!-- Modal flotante login/registro -->
+  <!-- Modal pantalla completa para login/registro -->
   <div class="modal" id="loginModal">
     <h2>Bienvenido a MiniRed Social</h2>
     <button onclick="mostrarLogin()">Iniciar Sesión</button>
@@ -68,10 +68,10 @@
 
   <!-- Navbar inferior -->
   <nav class="bottom-nav">
-    <button class="active" onclick="mostrarSeccion('inicio', this)">🏠</button>
-    <button onclick="triggerUpload()">➕</button>
-    <button onclick="mostrarSeccion('buscar', this)">🔍</button>
-    <button onclick="mostrarSeccion('perfil', this)">👤</button>
+    <button data-target="inicio" class="active">🏠</button>
+    <button id="uploadBtn">➕</button>
+    <button data-target="buscar">🔍</button>
+    <button data-target="perfil">👤</button>
   </nav>
 
   <!-- Modal historias -->
