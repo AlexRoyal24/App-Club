@@ -92,6 +92,7 @@ uploadInput.addEventListener("change", () => {
 function crearPost(archivo) {
   const post = document.createElement("div");
   post.className = "post";
+  post.style.position = "relative"; // para colocar botón mute
 
   let media;
   if (archivo.type.startsWith("image/")) media = document.createElement("img");
@@ -102,10 +103,10 @@ function crearPost(archivo) {
 
   if (archivo.type.startsWith("video/")) {
     media.autoplay = true;
-    media.muted = false; // usa volumen del dispositivo
     media.loop = true;
-    media.controls = false;
-    
+    media.controls = false; // sin descarga
+    media.muted = false; // usa volumen del dispositivo
+
     // Botón mute individual
     const muteBtn = document.createElement("button");
     muteBtn.className = "mute-btn";
@@ -133,6 +134,7 @@ function crearPost(archivo) {
 
   post.appendChild(media);
 
+  // Acciones de post
   const actions = document.createElement("div");
   actions.className = "post-actions";
   actions.innerHTML = `
@@ -189,7 +191,7 @@ function actualizarAudio() {
     feed.querySelectorAll("video").forEach(video => {
       if (activo) video.play();
       else video.pause();
-      // Por defecto, usa el volumen del dispositivo
+      // No mute por defecto, usa volumen del dispositivo
     });
   });
 }
