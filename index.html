@@ -9,23 +9,27 @@
 </head>
 <body>
 
-  <!-- Modal pantalla completa para login/registro -->
+  <!-- Modal flotante para login/registro -->
   <div class="modal" id="loginModal">
-    <h2>Bienvenido a MiniRed Social</h2>
-    <button onclick="mostrarLogin()">Iniciar Sesión</button>
-    <button onclick="mostrarRegistro()">Registrarme</button>
+    <div class="modal-content">
+      <h2>Bienvenido a MiniRed Social</h2>
+      <div class="modal-buttons">
+        <button onclick="mostrarLogin()">Iniciar Sesión</button>
+        <button onclick="mostrarRegistro()">Registrarme</button>
+      </div>
 
-    <div id="loginForm" class="form-container">
-      <input type="email" id="email" placeholder="Correo electrónico"><br>
-      <input type="password" id="password" placeholder="Contraseña"><br>
-      <button onclick="iniciarSesion()">Entrar</button>
-    </div>
+      <div id="loginForm" class="form-container">
+        <input type="email" id="email" placeholder="Correo electrónico">
+        <input type="password" id="password" placeholder="Contraseña">
+        <button onclick="iniciarSesion()">Entrar</button>
+      </div>
 
-    <div id="registroForm" class="form-container">
-      <input type="email" id="emailReg" placeholder="Correo electrónico"><br>
-      <input type="password" id="passwordReg" placeholder="Contraseña"><br>
-      <input type="text" id="nickReg" placeholder="Nick"><br>
-      <button onclick="registrarme()">Registrarme</button>
+      <div id="registroForm" class="form-container">
+        <input type="email" id="emailReg" placeholder="Correo electrónico">
+        <input type="password" id="passwordReg" placeholder="Contraseña">
+        <input type="text" id="nickReg" placeholder="Nick">
+        <button onclick="registrarme()">Registrarme</button>
+      </div>
     </div>
   </div>
 
@@ -65,7 +69,7 @@
 
     <section id="perfil" class="section">
       <h2>👤 Perfil</h2>
-      <div id="perfilInfo"></div>
+      <div id="perfilInfo" class="perfil-info"></div>
       <!-- Feed Perfil -->
       <div class="feed" id="feedPerfil"></div>
     </section>
