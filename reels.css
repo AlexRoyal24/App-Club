@@ -119,3 +119,13 @@
   max-height: 90%;
   border-radius: 15px;
 }
+
+.mute-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.mute-btn:hover {
+  background: rgba(0,0,0,0.7);
+}
