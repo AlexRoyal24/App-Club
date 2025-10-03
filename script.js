@@ -201,6 +201,39 @@ function actualizarAudio() {
   });
 }
 
+// Función para reproducir/pausar videos según visibilidad
+function actualizarVideosVisibles() {
+  const secciones = ["inicio", "perfil"];
+  secciones.forEach(id => {
+    const seccion = document.getElementById(id);
+    const feed = document.getElementById(id === "inicio" ? "feedInicio" : "feedPerfil");
+    const activo = seccion.classList.contains("active");
+
+    feed.querySelectorAll("video").forEach(video => {
+      const rect = video.getBoundingClientRect();
+      const estaVisible = rect.top >= 0 && rect.bottom <= window.innerHeight;
+
+      if (activo && estaVisible) video.play();
+      else video.pause();
+      // No mute por defecto, usa volumen del dispositivo
+    });
+  });
+}
+
+// Llamar cuando se cambia de sección
+document.querySelectorAll(".bottom-nav button").forEach(btn => {
+  btn.addEventListener("click", () => setTimeout(actualizarVideosVisibles, 50));
+});
+
+// Llamar al hacer scroll en cualquier feed
+[feedInicio, feedPerfil].forEach(feed => {
+  feed.addEventListener("scroll", actualizarVideosVisibles);
+});
+
+// Inicial al cargar página
+window.addEventListener("load", actualizarVideosVisibles);
+
+
 // Llamar actualizarAudio al cambiar sección
 document.querySelectorAll(".bottom-nav button").forEach(btn => {
   btn.addEventListener("click", () => setTimeout(actualizarAudio, 50));
