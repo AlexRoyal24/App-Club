@@ -1,27 +1,18 @@
-// Modales
+// Modal Login/Registro
 const modal = document.getElementById("loginModal");
 const loginForm = document.getElementById("loginForm");
 const registroForm = document.getElementById("registroForm");
-const storyModal = document.getElementById("storyModal");
-const storyImg = document.getElementById("storyImg");
 
-// Mostrar modal si no hay usuario
 window.addEventListener("load", () => {
   const usuarioActual = localStorage.getItem("usuarioActual");
   if (!usuarioActual) modal.classList.add("active");
-  else mostrarUsuarioPerfil();
 });
 
-// Login / Registro
-function mostrarLogin() {
-  loginForm.style.display = "block";
-  registroForm.style.display = "none";
-}
-function mostrarRegistro() {
-  loginForm.style.display = "none";
-  registroForm.style.display = "block";
-}
+// Mostrar Login/Registro
+function mostrarLogin() { loginForm.style.display = "block"; registroForm.style.display = "none"; }
+function mostrarRegistro() { loginForm.style.display = "none"; registroForm.style.display = "block"; }
 
+// Generar contraseña automática
 function generarContrasena() {
   const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
   let pass = "";
@@ -29,6 +20,7 @@ function generarContrasena() {
   return pass;
 }
 
+// Iniciar sesión
 function iniciarSesion() {
   const emailInput = document.getElementById("email").value.trim();
   const passwordInput = document.getElementById("password").value.trim();
@@ -40,18 +32,19 @@ function iniciarSesion() {
   if (usuarioExistente) {
     if (passwordInput === usuarioExistente.password) {
       localStorage.setItem("usuarioActual", emailInput);
-      alert(`Bienvenido de nuevo ${usuarioExistente.nick} ✨`);
+      document.getElementById("usuarioNick").textContent = usuarioExistente.nick;
       modal.classList.remove("active");
-      mostrarUsuarioPerfil();
     } else alert("Contraseña incorrecta.");
-  } else alert("Usuario no registrado. Usa 'Registrarme'.");
+  } else alert("Usuario no registrado.");
 }
 
+// Registrarse
 function registrarme() {
   const emailInput = document.getElementById("emailReg").value.trim();
   let passwordInput = document.getElementById("passwordReg").value.trim();
   const nickInput = document.getElementById("nickReg").value.trim();
-  if (!emailInput || !nickInput) { alert("Ingresa correo y nick."); return; }
+
+  if (!emailInput || !nickInput) { alert("Correo y nick obligatorios."); return; }
   if (!passwordInput) passwordInput = generarContrasena();
 
   let usuarios = JSON.parse(localStorage.getItem("usuariosApp") || "[]");
@@ -60,88 +53,111 @@ function registrarme() {
   usuarios.push({ email: emailInput, password: passwordInput, nick: nickInput });
   localStorage.setItem("usuariosApp", JSON.stringify(usuarios));
   localStorage.setItem("usuarioActual", emailInput);
-  alert(`Cuenta creada. Tu contraseña es: ${passwordInput}`);
+  document.getElementById("usuarioNick").textContent = nickInput;
   modal.classList.remove("active");
-  mostrarUsuarioPerfil();
+  alert(`Cuenta creada. Tu contraseña: ${passwordInput}`);
 }
-
-// Mostrar nick en perfil
-function mostrarUsuarioPerfil() {
-  const usuarioActual = localStorage.getItem("usuarioActual");
-  if (!usuarioActual) return;
-  const usuarios = JSON.parse(localStorage.getItem("usuariosApp") || "[]");
-  const user = usuarios.find(u => u.email === usuarioActual);
-  if (user) {
-    document.getElementById("perfilInfo").innerHTML = `<p>Nick: ${user.nick}</p>`;
-  }
-}
-
-// Historias
-function openStory(src) {
-  storyImg.src = src;
-  storyModal.classList.add("active");
-  setTimeout(closeStory, 4000);
-}
-function closeStory() { storyModal.classList.remove("active"); }
 
 // Navbar inferior
 function mostrarSeccion(id, btn) {
   document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 
-  document.querySelectorAll(".bottom-nav button[data-target]").forEach(b => b.classList.remove("active"));
+  document.querySelectorAll(".bottom-nav button").forEach(b => b.classList.remove("active"));
   btn.classList.add("active");
 }
 
-// Manejo botones barra
-document.querySelectorAll(".bottom-nav button[data-target]").forEach(btn => {
-  btn.addEventListener("click", () => {
-    mostrarSeccion(btn.getAttribute("data-target"), btn);
-  });
-});
-document.getElementById("uploadBtn").addEventListener("click", () => {
-  document.getElementById("uploadFile").click();
-});
-
-// Subir publicaciones
+// Subida de publicaciones
+function triggerUpload() { document.getElementById("uploadFile").click(); }
 const uploadInput = document.getElementById("uploadFile");
+
 uploadInput.addEventListener("change", () => {
   const archivo = uploadInput.files[0];
   if (!archivo) return;
   agregarPost(archivo);
+  agregarPostPerfil(archivo);
   uploadInput.value = "";
 });
 
+// Feed Inicio
+const feedInicio = document.getElementById("feedInicio");
+
 function agregarPost(archivo) {
-  const feeds = [document.getElementById("feedInicio"), document.getElementById("feedPerfil")];
+  const post = document.createElement("div");
+  post.className = "post";
 
-  feeds.forEach(feed => {
-    const post = document.createElement("div");
-    post.className = "post";
+  let media;
+  if (archivo.type.startsWith("image/")) media = document.createElement("img");
+  else if (archivo.type.startsWith("video/")) media = document.createElement("video");
 
-    let media;
-    if (archivo.type.startsWith("image/")) {
-      media = document.createElement("img");
-      media.src = URL.createObjectURL(archivo);
-    } else if (archivo.type.startsWith("video/")) {
-      media = document.createElement("video");
-      media.src = URL.createObjectURL(archivo);
-      media.controls = true;
-      media.loop = true;
-      media.muted = false;
-      media.autoplay = true;
-    }
-    media.classList.add("post-media");
-    post.appendChild(media);
+  media.src = URL.createObjectURL(archivo);
+  media.classList.add("post-media");
+  if (archivo.type.startsWith("video/")) {
+    media.autoplay = true;
+    media.muted = true;
+    media.loop = true;
+    media.controls = false; // sin descarga
+  }
+  post.appendChild(media);
 
-    const actions = document.createElement("div");
-    actions.className = "post-actions";
-    actions.innerHTML = `
-      <button onclick="alert('Te gustó ❤️')">❤️</button>
-      <button onclick="alert('Comentar 💬')">💬</button>
-      <button onclick="alert('Compartir ↪️')">↪️</button>
-    `;
-    post.appendChild(actions);
-    feed.prepend(post);
+  const actions = document.createElement("div");
+  actions.className = "post-actions";
+  actions.innerHTML = `
+    <button onclick="alert('❤️ Me gusta')">❤️</button>
+    <button onclick="alert('💬 Comentar')">💬</button>
+    <button onclick="alert('↪️ Compartir')">↪️</button>
+  `;
+  post.appendChild(actions);
+
+  feedInicio.prepend(post);
+}
+
+// Feed Perfil estilo TikTok
+const feedPerfil = document.getElementById("feedPerfil");
+function agregarPostPerfil(archivo) {
+  const post = document.createElement("div");
+  post.className = "post";
+
+  let media;
+  if (archivo.type.startsWith("image/")) media = document.createElement("img");
+  else if (archivo.type.startsWith("video/")) media = document.createElement("video");
+
+  media.src = URL.createObjectURL(archivo);
+  media.classList.add("post-media");
+  if (archivo.type.startsWith("video/")) {
+    media.autoplay = true;
+    media.muted = true;
+    media.loop = true;
+    media.controls = false; // sin descarga
+  }
+  post.appendChild(media);
+
+  const actions = document.createElement("div");
+  actions.className = "post-actions";
+  actions.innerHTML = `
+    <button onclick="alert('❤️ Me gusta')">❤️</button>
+    <button onclick="alert('💬 Comentar')">💬</button>
+    <button onclick="alert('↪️ Compartir')">↪️</button>
+  `;
+  post.appendChild(actions);
+  feedPerfil.prepend(post);
+}
+
+// Reproducir solo videos visibles en perfil
+feedPerfil.addEventListener("scroll", () => {
+  const videos = feedPerfil.querySelectorAll("video");
+  videos.forEach(video => {
+    const rect = video.getBoundingClientRect();
+    if (rect.top >= 0 && rect.bottom <= window.innerHeight) video.play();
+    else video.pause();
   });
+});
+
+// Historias
+const storyModal = document.getElementById("storyModal");
+const storyImg = document.getElementById("storyImg");
+function openStory(src) {
+  storyImg.src = src;
+  storyModal.classList.add("active");
+  setTimeout(() => storyModal.classList.remove("active"), 4000);
 }
