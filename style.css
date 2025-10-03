@@ -1,43 +1,84 @@
-/* Reset y estilos generales */
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family: Arial, sans-serif; background:#000; color:#fff; overflow-x:hidden; }
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MiniRed Social</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="reels.css">
+</head>
+<body>
 
-/* Secciones */
-.section { display:none; padding:20px; height:calc(100vh - 70px); overflow-y:auto; }
-.section.active { display:block; }
+  <!-- Modal flotante login/registro -->
+  <div class="modal" id="loginModal">
+    <h2>Bienvenido a MiniRed Social</h2>
+    <button onclick="mostrarLogin()">Iniciar Sesión</button>
+    <button onclick="mostrarRegistro()">Registrarme</button>
 
-/* Historias */
-.stories { display:flex; gap:15px; overflow-x:auto; padding:15px; background:#111; border-bottom:1px solid #333; position:sticky; top:0; z-index:10; }
-.story { flex:0 0 auto; text-align:center; cursor:pointer; }
-.story img { width:60px; height:60px; border-radius:50%; border:3px solid #ff0050; object-fit:cover; }
-.story p { font-size:12px; margin-top:5px; }
+    <div id="loginForm" class="form-container">
+      <input type="email" id="email" placeholder="Correo electrónico"><br>
+      <input type="password" id="password" placeholder="Contraseña"><br>
+      <button onclick="iniciarSesion()">Entrar</button>
+    </div>
 
-/* Feed */
-.feed { display:flex; flex-direction:column; gap:20px; margin-top:10px; }
+    <div id="registroForm" class="form-container">
+      <input type="email" id="emailReg" placeholder="Correo electrónico"><br>
+      <input type="password" id="passwordReg" placeholder="Contraseña"><br>
+      <input type="text" id="nickReg" placeholder="Nick"><br>
+      <button onclick="registrarme()">Registrarme</button>
+    </div>
+  </div>
 
-/* Publicaciones */
-.post { position:relative; width:95%; max-width:500px; margin:0 auto; border-radius:15px; overflow:hidden; background:#111; }
-.post-media { width:100%; border-radius:15px; cursor:pointer; }
-.post-actions { position:absolute; right:10px; bottom:10px; display:flex; flex-direction:column; gap:10px; }
-.post-actions button { background:rgba(0,0,0,0.5); border:none; border-radius:50%; width:45px; height:45px; color:#fff; font-size:20px; cursor:pointer; transition:transform 0.2s, background 0.3s; }
-.post-actions button:hover { background:#ff0050; transform:scale(1.2); }
+  <!-- Input oculto para subir archivo -->
+  <input type="file" id="uploadFile" accept="image/*,video/*" style="display:none;" />
 
-/* Navbar inferior */
-.bottom-nav { position:fixed; bottom:0; width:100%; background:rgba(0,0,0,0.95); display:flex; justify-content:space-around; padding:10px 0; border-top:1px solid #333; z-index:20; }
-.bottom-nav button { background:none; border:none; outline:none; color:#aaa; font-size:22px; cursor:pointer; transition:all 0.3s; }
-.bottom-nav button.active { color:#00c6ff; font-weight:bold; text-shadow:0 0 10px #00c6ff; }
-.bottom-nav button:hover { transform:scale(1.2); color:#fff; }
+  <!-- Secciones principales -->
+  <main>
+    <section id="inicio" class="section active">
+      <h2>🏠 Inicio</h2>
+      <div class="stories">
+        <div class="story" onclick="openStory('img/foto1.jpg')">
+          <img src="img/foto1.jpg" alt="Historia de Alex">
+          <p>Alex</p>
+        </div>
+        <div class="story" onclick="openStory('img/foto2.jpg')">
+          <img src="img/foto2.jpg" alt="Historia de Naunet">
+          <p>Naunet</p>
+        </div>
+      </div>
+      <div class="feed" id="feedInicio"></div>
+    </section>
 
-/* Modal login/registro */
-.modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.5s ease; z-index:50; flex-direction:column; text-align:center; }
-.modal.active { opacity:1; pointer-events:all; }
-.modal h2 { margin-bottom:20px; font-size:28px; }
-.modal button { margin:10px 0; padding:15px 40px; border:none; border-radius:10px; background:#ff0050; color:#fff; font-size:20px; cursor:pointer; }
-.modal button:hover { background:#ff3366; }
-.modal input { width:80%; padding:12px; margin:10px 0; border:none; border-radius:5px; outline:none; font-size:16px; }
-.form-container { margin-top:20px; display:none; }
+    <section id="agregar" class="section">
+      <h2>➕ Agregar Publicación</h2>
+      <p>Usa el botón "+" para subir fotos o videos.</p>
+    </section>
 
-/* Historias modal */
-.story-modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.5s ease; z-index:40; }
-.story-modal.active { opacity:1; pointer-events:all; }
-.story-modal img { max-width:90%; max-height:90%; border-radius:10px; }
+    <section id="buscar" class="section">
+      <h2>🔍 Buscar</h2>
+      <p>Aquí se mostrarán los resultados de búsqueda.</p>
+    </section>
+
+    <section id="perfil" class="section">
+      <h2>👤 Perfil</h2>
+      <div id="perfilInfo"></div>
+      <div class="feed" id="feedPerfil"></div>
+    </section>
+  </main>
+
+  <!-- Navbar inferior -->
+  <nav class="bottom-nav">
+    <button class="active" onclick="mostrarSeccion('inicio', this)">🏠</button>
+    <button onclick="triggerUpload()">➕</button>
+    <button onclick="mostrarSeccion('buscar', this)">🔍</button>
+    <button onclick="mostrarSeccion('perfil', this)">👤</button>
+  </nav>
+
+  <!-- Modal historias -->
+  <div class="story-modal" id="storyModal">
+    <img id="storyImg" src="" alt="Historia">
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
