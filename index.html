@@ -9,102 +9,7 @@
 </head>
 <body>
 
-  <!-- Pestaña flotante login/registro -->
-  <div id="loginBox" class="login-box">
-    <h2>Club Coromac</h2>
-
-    <div class="tab-buttons">
-      <button id="tabLoginBtn" class="active">Iniciar Sesión</button>
-      <button id="tabRegBtn">Registrarse</button>
-    </div>
-
-    <!-- Login -->
-    <div id="tabLogin" class="tab-content active">
-      <input type="text" id="loginEmail" placeholder="Correo electrónico">
-      <input type="password" id="loginPassword" placeholder="Contraseña">
-      <button onclick="loginUser()">Entrar</button>
-    </div>
-
-    <!-- Registro -->
-    <div id="tabRegister" class="tab-content">
-      <input type="text" id="regNick" placeholder="Tu Nick">
-      <input type="text" id="regEmail" placeholder="Correo electrónico">
-      <input type="password" id="regPassword" placeholder="Contraseña">
-      <button onclick="registerUser()">Registrarse</button>
-    </div>
-  </div>
-
-  <!-- Input oculto para subir archivo -->
-  <input type="file" id="uploadFile" accept="image/*,video/*" style="display:none;" />
-
-  <!-- Secciones principales -->
-  <main>
-    <section id="inicio" class="section active">
-      <h2>🏠 Inicio</h2>
-      <!-- Historias -->
-      <div class="stories">
-        <div class="story" onclick="openStory('img/foto1.jpg')">
-          <img src="img/foto1.jpg" alt="Historia de Alex">
-          <p>Alex</p>
-        </div>
-        <div class="story" onclick="openStory('img/foto2.jpg')">
-          <img src="img/foto2.jpg" alt="Historia de Naunet">
-          <p>Naunet</p>
-        </div>
-        <div class="story" onclick="openStory('img/foto3.jpg')">
-          <img src="img/foto3.jpg" alt="Historia de Amigo">
-          <p>Amigo</p>
-        </div>
-      </div>
-
-      <!-- Feed Inicio -->
-      <div class="feed" id="feedInicio"></div>
-    </section>
-
-    <section id="agregar" class="section">
-      <h2>➕ Agregar Publicación</h2>
-      <p>Se subirá al iniciar el selector de archivos desde el botón +.</p>
-    </section>
-
-    <section id="buscar" class="section">
-      <h2>🔍 Buscar</h2>
-      <p>Aquí se mostrarán los resultados de búsqueda.</p>
-    </section>
-
-    <section id="perfil" class="section">
-      <h2>👤 Perfil</h2>
-      <!-- Feed Perfil -->
-      <div class="feed" id="feedPerfil"></div>
-    </section>
-  </main>
-
-  <!-- Navbar inferior -->
-  <nav class="bottom-nav">
-    <button class="active" onclick="mostrarSeccion('inicio', this)">🏠</button>
-    <button onclick="triggerUpload()">➕</button>
-    <button onclick="mostrarSeccion('buscar', this)">🔍</button>
-    <button onclick="mostrarSeccion('perfil', this)">👤</button>
-  </nav>
-
-  <!-- Modal historias -->
-  <div class="story-modal" id="storyModal">
-    <img id="storyImg" src="" alt="Historia">
-  </div>
-
-  <script src="script.js"></script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MiniRed Social</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-  <!-- Modal pantalla completa -->
+  <!-- Modal pantalla completa para login/registro -->
   <div class="modal" id="loginModal">
     <h2>Bienvenido a MiniRed Social</h2>
     <button onclick="mostrarLogin()">Iniciar Sesión</button>
@@ -112,13 +17,14 @@
 
     <div id="loginForm" class="form-container">
       <input type="email" id="email" placeholder="Correo electrónico"><br>
-      <input type="password" id="password" placeholder="Contraseña (8 caracteres)"><br>
+      <input type="password" id="password" placeholder="Contraseña"><br>
       <button onclick="iniciarSesion()">Entrar</button>
     </div>
 
     <div id="registroForm" class="form-container">
       <input type="email" id="emailReg" placeholder="Correo electrónico"><br>
-      <input type="password" id="passwordReg" placeholder="Contraseña (8 caracteres)"><br>
+      <input type="password" id="passwordReg" placeholder="Contraseña"><br>
+      <input type="text" id="nickReg" placeholder="Nick"><br>
       <button onclick="registrarme()">Registrarme</button>
     </div>
   </div>
@@ -130,6 +36,7 @@
   <main>
     <section id="inicio" class="section active">
       <h2>🏠 Inicio</h2>
+
       <!-- Historias -->
       <div class="stories">
         <div class="story" onclick="openStory('img/foto1.jpg')">
@@ -140,10 +47,6 @@
           <img src="img/foto2.jpg" alt="Historia de Naunet">
           <p>Naunet</p>
         </div>
-        <div class="story" onclick="openStory('img/foto3.jpg')">
-          <img src="img/foto3.jpg" alt="Historia de Amigo">
-          <p>Amigo</p>
-        </div>
       </div>
 
       <!-- Feed Inicio -->
@@ -152,7 +55,7 @@
 
     <section id="agregar" class="section">
       <h2>➕ Agregar Publicación</h2>
-      <p>Se subirá al iniciar el selector de archivos desde el botón +.</p>
+      <p>Usa el botón "+" para subir fotos o videos.</p>
     </section>
 
     <section id="buscar" class="section">
@@ -162,6 +65,7 @@
 
     <section id="perfil" class="section">
       <h2>👤 Perfil</h2>
+      <div id="perfilInfo"></div>
       <!-- Feed Perfil -->
       <div class="feed" id="feedPerfil"></div>
     </section>
@@ -183,5 +87,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-
-
