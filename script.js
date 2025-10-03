@@ -6,11 +6,18 @@ const registroForm = document.getElementById("registroForm");
 window.addEventListener("load", () => {
   const usuarioActual = localStorage.getItem("usuarioActual");
   if (!usuarioActual) modal.classList.add("active");
+  actualizarAudio();
 });
 
 // Mostrar Login/Registro
-function mostrarLogin() { loginForm.style.display = "block"; registroForm.style.display = "none"; }
-function mostrarRegistro() { loginForm.style.display = "none"; registroForm.style.display = "block"; }
+function mostrarLogin() { 
+  loginForm.style.display = "block"; 
+  registroForm.style.display = "none"; 
+}
+function mostrarRegistro() { 
+  loginForm.style.display = "none"; 
+  registroForm.style.display = "block"; 
+}
 
 // Generar contraseña automática
 function generarContrasena() {
@@ -65,6 +72,8 @@ function mostrarSeccion(id, btn) {
 
   document.querySelectorAll(".bottom-nav button").forEach(b => b.classList.remove("active"));
   btn.classList.add("active");
+
+  actualizarAudio();
 }
 
 // Subida de publicaciones
@@ -74,15 +83,14 @@ const uploadInput = document.getElementById("uploadFile");
 uploadInput.addEventListener("change", () => {
   const archivo = uploadInput.files[0];
   if (!archivo) return;
-  agregarPost(archivo);
+  agregarPostInicio(archivo);
   agregarPostPerfil(archivo);
   uploadInput.value = "";
 });
 
 // Feed Inicio
 const feedInicio = document.getElementById("feedInicio");
-
-function agregarPost(archivo) {
+function agregarPostInicio(archivo) {
   const post = document.createElement("div");
   post.className = "post";
 
@@ -96,7 +104,7 @@ function agregarPost(archivo) {
     media.autoplay = true;
     media.muted = true;
     media.loop = true;
-    media.controls = false; // sin descarga
+    media.controls = false;
   }
   post.appendChild(media);
 
@@ -128,7 +136,7 @@ function agregarPostPerfil(archivo) {
     media.autoplay = true;
     media.muted = true;
     media.loop = true;
-    media.controls = false; // sin descarga
+    media.controls = false;
   }
   post.appendChild(media);
 
@@ -140,10 +148,11 @@ function agregarPostPerfil(archivo) {
     <button onclick="alert('↪️ Compartir')">↪️</button>
   `;
   post.appendChild(actions);
+
   feedPerfil.prepend(post);
 }
 
-// Reproducir solo videos visibles en perfil
+// Scroll Perfil: reproducir solo video visible
 feedPerfil.addEventListener("scroll", () => {
   const videos = feedPerfil.querySelectorAll("video");
   videos.forEach(video => {
@@ -162,7 +171,7 @@ function openStory(src) {
   setTimeout(() => storyModal.classList.remove("active"), 4000);
 }
 
-// Crear botón de sonido para Inicio y Perfil
+// Botones de sonido flotantes
 function crearBotonSonido(seccionId, feedId) {
   const seccion = document.getElementById(seccionId);
   const feed = document.getElementById(feedId);
@@ -191,16 +200,14 @@ function crearBotonSonido(seccionId, feedId) {
   };
 
   document.body.appendChild(boton);
-
-  // Guardar referencia en la sección para manejar visibilidad
   seccion.dataset.botonSonido = boton;
 }
 
-// Crear botones para Inicio y Perfil
+// Crear botones
 crearBotonSonido("inicio", "feedInicio");
 crearBotonSonido("perfil", "feedPerfil");
 
-// Actualizar visibilidad y audio al cambiar sección
+// Actualizar audio y visibilidad
 function actualizarAudio() {
   const secciones = ["inicio", "perfil"];
   secciones.forEach(id => {
@@ -209,89 +216,17 @@ function actualizarAudio() {
     const boton = seccion.dataset.botonSonido;
 
     const activo = seccion.classList.contains("active");
-
-    // Mostrar/ocultar botón
     boton.style.display = activo ? "block" : "none";
 
     feed.querySelectorAll("video").forEach(video => {
       if (activo) video.play();
       else video.pause();
-      video.muted = true; // mute por defecto
+      video.muted = !activo; // mute por defecto según sección
     });
   });
 }
 
-// Llamar al cambiar sección
+// Actualizar al cambiar sección
 document.querySelectorAll(".bottom-nav button").forEach(btn => {
   btn.addEventListener("click", () => setTimeout(actualizarAudio, 50));
 });
-
-// Inicial
-window.addEventListener("load", actualizarAudio);
-
-// Crear botón de sonido para Inicio y Perfil
-function crearBotonSonido(seccionId, feedId) {
-  const seccion = document.getElementById(seccionId);
-  const feed = document.getElementById(feedId);
-
-  const boton = document.createElement("button");
-  boton.innerText = "🔊";
-  boton.className = "sound-btn";
-  boton.style.position = "fixed";
-  boton.style.top = "20px";
-  boton.style.right = "20px";
-  boton.style.zIndex = "100";
-  boton.style.background = "rgba(0,0,0,0.5)";
-  boton.style.color = "#fff";
-  boton.style.border = "none";
-  boton.style.borderRadius = "50%";
-  boton.style.width = "50px";
-  boton.style.height = "50px";
-  boton.style.fontSize = "24px";
-  boton.style.cursor = "pointer";
-
-  let sonidoActivo = false;
-
-  boton.onclick = () => {
-    sonidoActivo = !sonidoActivo;
-    feed.querySelectorAll("video").forEach(video => video.muted = !sonidoActivo);
-  };
-
-  document.body.appendChild(boton);
-
-  // Guardar referencia en la sección para manejar visibilidad
-  seccion.dataset.botonSonido = boton;
-}
-
-// Crear botones para Inicio y Perfil
-crearBotonSonido("inicio", "feedInicio");
-crearBotonSonido("perfil", "feedPerfil");
-
-// Actualizar visibilidad y audio al cambiar sección
-function actualizarAudio() {
-  const secciones = ["inicio", "perfil"];
-  secciones.forEach(id => {
-    const seccion = document.getElementById(id);
-    const feed = document.getElementById(id === "inicio" ? "feedInicio" : "feedPerfil");
-    const boton = seccion.dataset.botonSonido;
-
-    const activo = seccion.classList.contains("active");
-
-    // Mostrar/ocultar botón
-    boton.style.display = activo ? "block" : "none";
-
-    feed.querySelectorAll("video").forEach(video => {
-      if (activo) video.play();
-      else video.pause();
-      video.muted = true; // mute por defecto
-    });
-  });
-}
-
-// Llamar al cambiar sección
-document.querySelectorAll(".bottom-nav button").forEach(btn => {
-  btn.addEventListener("click", () => setTimeout(actualizarAudio, 50));
-});
-
-// Inicial
-window.addEventListener("load", actualizarAudio);
