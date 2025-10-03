@@ -1,40 +1,7 @@
-.post {
-  position: relative;
-  margin: 20px auto;
-  max-width: 500px;
-  border-radius: 15px;
-  overflow: hidden;
-  background: #000;
-}
-
-.post-media {
-  width: 100%;
-  border-radius: 15px;
-  object-fit: cover;
-  cursor: pointer;
-}
-
-.post-actions {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.post-actions button {
-  background: rgba(0,0,0,0.5);
-  border: none;
-  border-radius: 50%;
-  width: 45px;
-  height: 45px;
-  color: #fff;
-  font-size: 20px;
-  cursor: pointer;
-  transition: transform 0.2s, background 0.3s;
-}
-.post-actions button:hover {
-  background: #ff0050;
-  transform: scale(1.2);
-}
+/* Feed publicaciones tipo Instagram */
+.feed { display: flex; flex-direction: column; gap: 20px; padding-bottom: 80px; }
+.post { position: relative; background: #111; border-radius: 15px; overflow: hidden; max-width: 500px; margin: 0 auto; }
+.post-media { width: 100%; border-radius: 15px; object-fit: cover; cursor: pointer; }
+.post-actions { position: absolute; right: 10px; bottom: 10px; display: flex; flex-direction: column; gap: 10px; }
+.post-actions button { background: rgba(0,0,0,0.5); border: none; border-radius: 50%; width: 45px; height: 45px; color: #fff; font-size: 20px; cursor: pointer; transition: transform 0.2s, background 0.3s; }
+.post-actions button:hover { background: #ff0050; transform: scale(1.2); }
