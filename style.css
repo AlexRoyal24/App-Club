@@ -1,25 +1,18 @@
-/* Reset y base */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
   font-family: Arial, sans-serif;
   background: #000;
   color: #fff;
   overflow-x: hidden;
-  animation: fadeIn 1.5s ease-in;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
-/* Secciones */
 .section {
   display: none;
   padding: 20px;
   height: calc(100vh - 70px);
   overflow-y: auto;
 }
-.section.active { display: block; animation: fadeIn 0.4s ease; }
+.section.active { display: block; }
 
 /* Historias */
 .stories {
@@ -37,96 +30,6 @@ body {
 .story img { width: 60px; height: 60px; border-radius: 50%; border: 3px solid #ff0050; object-fit: cover; }
 .story p { font-size: 12px; margin-top: 5px; }
 
-/* Feed */
-.feed {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.post {
-  position: relative;
-  margin: 20px auto;
-  width: 95%;
-  max-width: 500px;
-  background: #111;
-  border-radius: 15px;
-  overflow: hidden;
-}
-.post-media {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 15px;
-  cursor: pointer;
-  object-fit: cover;
-}
-
-/* Acciones horizontales (feed) */
-.post-actions.horizontal {
-  display: flex;
-  justify-content: space-around;
-  padding: 10px;
-  background: rgba(0,0,0,0.6);
-}
-.post-actions.horizontal button {
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 20px;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-.post-actions.horizontal button:hover { transform: scale(1.2); color: #ff0050; }
-
-/* Modal Reels */
-.reel-modal {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.4s ease;
-  z-index: 100;
-}
-.reel-modal.active { opacity: 1; pointer-events: all; }
-.reel-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-.reel-container video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Acciones verticales en reels */
-.reel-actions {
-  position: absolute;
-  right: 15px;
-  bottom: 100px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  align-items: center;
-}
-.reel-actions button {
-  background: rgba(0,0,0,0.6);
-  border: none;
-  border-radius: 50%;
-  width: 50px; height: 50px;
-  color: #fff;
-  font-size: 22px;
-  cursor: pointer;
-  transition: transform 0.2s, background 0.3s;
-}
-.reel-actions button:hover { background: #ff0050; transform: scale(1.2); }
-
 /* Navbar inferior */
 .bottom-nav {
   position: fixed;
@@ -137,7 +40,7 @@ body {
   justify-content: space-around;
   padding: 10px 0;
   border-top: 1px solid #333;
-  z-index: 200;
+  z-index: 20;
 }
 .bottom-nav button {
   background: none;
@@ -148,9 +51,43 @@ body {
   cursor: pointer;
   transition: all 0.3s;
 }
-.bottom-nav button.active {
-  color: #00c6ff;
-  font-weight: bold;
-  text-shadow: 0 0 10px #00c6ff;
-}
+.bottom-nav button.active { color: #00c6ff; font-weight: bold; text-shadow: 0 0 10px #00c6ff; }
 .bottom-nav button:hover { transform: scale(1.2); color: #fff; }
+
+/* Login/Registro flotante */
+.login-box {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: #111;
+  border-radius: 15px;
+  padding: 30px;
+  width: 320px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+  text-align: center;
+  z-index: 100;
+}
+
+.login-box h2 { margin-bottom: 20px; font-size: 24px; }
+.login-box input {
+  width: 90%; padding: 12px; margin: 10px 0; border-radius: 10px;
+  border: none; outline: none; font-size: 16px;
+}
+.login-box button {
+  width: 50%; padding: 12px; margin-top: 10px; border: none;
+  border-radius: 10px; background: #ff0050; color: #fff;
+  font-size: 16px; cursor: pointer; transition: background 0.3s;
+}
+.login-box button:hover { background: #ff3366; }
+
+.tab-buttons {
+  display: flex; justify-content: space-around; margin-bottom: 15px;
+}
+.tab-buttons button {
+  flex: 1; padding: 10px 0; border: none; background: #222; color: #aaa;
+  font-size: 16px; cursor: pointer; transition: 0.3s; border-radius: 10px; margin: 0 5px;
+}
+.tab-buttons button.active { background: #ff0050; color: #fff; }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
