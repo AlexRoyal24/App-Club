@@ -228,3 +228,70 @@ document.querySelectorAll(".bottom-nav button").forEach(btn => {
 
 // Inicial
 window.addEventListener("load", actualizarAudio);
+
+// Crear botón de sonido para Inicio y Perfil
+function crearBotonSonido(seccionId, feedId) {
+  const seccion = document.getElementById(seccionId);
+  const feed = document.getElementById(feedId);
+
+  const boton = document.createElement("button");
+  boton.innerText = "🔊";
+  boton.className = "sound-btn";
+  boton.style.position = "fixed";
+  boton.style.top = "20px";
+  boton.style.right = "20px";
+  boton.style.zIndex = "100";
+  boton.style.background = "rgba(0,0,0,0.5)";
+  boton.style.color = "#fff";
+  boton.style.border = "none";
+  boton.style.borderRadius = "50%";
+  boton.style.width = "50px";
+  boton.style.height = "50px";
+  boton.style.fontSize = "24px";
+  boton.style.cursor = "pointer";
+
+  let sonidoActivo = false;
+
+  boton.onclick = () => {
+    sonidoActivo = !sonidoActivo;
+    feed.querySelectorAll("video").forEach(video => video.muted = !sonidoActivo);
+  };
+
+  document.body.appendChild(boton);
+
+  // Guardar referencia en la sección para manejar visibilidad
+  seccion.dataset.botonSonido = boton;
+}
+
+// Crear botones para Inicio y Perfil
+crearBotonSonido("inicio", "feedInicio");
+crearBotonSonido("perfil", "feedPerfil");
+
+// Actualizar visibilidad y audio al cambiar sección
+function actualizarAudio() {
+  const secciones = ["inicio", "perfil"];
+  secciones.forEach(id => {
+    const seccion = document.getElementById(id);
+    const feed = document.getElementById(id === "inicio" ? "feedInicio" : "feedPerfil");
+    const boton = seccion.dataset.botonSonido;
+
+    const activo = seccion.classList.contains("active");
+
+    // Mostrar/ocultar botón
+    boton.style.display = activo ? "block" : "none";
+
+    feed.querySelectorAll("video").forEach(video => {
+      if (activo) video.play();
+      else video.pause();
+      video.muted = true; // mute por defecto
+    });
+  });
+}
+
+// Llamar al cambiar sección
+document.querySelectorAll(".bottom-nav button").forEach(btn => {
+  btn.addEventListener("click", () => setTimeout(actualizarAudio, 50));
+});
+
+// Inicial
+window.addEventListener("load", actualizarAudio);
