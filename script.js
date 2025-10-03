@@ -1,4 +1,4 @@
-// Modales y formularios
+// Modales
 const modal = document.getElementById("loginModal");
 const loginForm = document.getElementById("loginForm");
 const registroForm = document.getElementById("registroForm");
@@ -7,15 +7,21 @@ const storyImg = document.getElementById("storyImg");
 
 // Mostrar modal si no hay usuario
 window.addEventListener("load", () => {
-  const usuarioActual = JSON.parse(localStorage.getItem("usuarioActual"));
+  const usuarioActual = localStorage.getItem("usuarioActual");
   if (!usuarioActual) modal.classList.add("active");
-  else mostrarPerfil();
+  else mostrarUsuarioPerfil();
 });
 
-function mostrarLogin() { loginForm.style.display = "block"; registroForm.style.display = "none"; }
-function mostrarRegistro() { loginForm.style.display = "none"; registroForm.style.display = "block"; }
+// Login / Registro
+function mostrarLogin() {
+  loginForm.style.display = "block";
+  registroForm.style.display = "none";
+}
+function mostrarRegistro() {
+  loginForm.style.display = "none";
+  registroForm.style.display = "block";
+}
 
-// Generar contraseña aleatoria
 function generarContrasena() {
   const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
   let pass = "";
@@ -23,7 +29,6 @@ function generarContrasena() {
   return pass;
 }
 
-// Iniciar sesión
 function iniciarSesion() {
   const emailInput = document.getElementById("email").value.trim();
   const passwordInput = document.getElementById("password").value.trim();
@@ -34,39 +39,41 @@ function iniciarSesion() {
 
   if (usuarioExistente) {
     if (passwordInput === usuarioExistente.password) {
-      alert(`Bienvenido de nuevo ${usuarioExistente.nick || emailInput} ✨`);
-      localStorage.setItem("usuarioActual", JSON.stringify(usuarioExistente));
+      localStorage.setItem("usuarioActual", emailInput);
+      alert(`Bienvenido de nuevo ${usuarioExistente.nick} ✨`);
       modal.classList.remove("active");
-      mostrarPerfil();
+      mostrarUsuarioPerfil();
     } else alert("Contraseña incorrecta.");
   } else alert("Usuario no registrado. Usa 'Registrarme'.");
 }
 
-// Registrarse
 function registrarme() {
   const emailInput = document.getElementById("emailReg").value.trim();
   let passwordInput = document.getElementById("passwordReg").value.trim();
   const nickInput = document.getElementById("nickReg").value.trim();
-  if (!emailInput || !nickInput) { alert("Completa todos los campos."); return; }
+  if (!emailInput || !nickInput) { alert("Ingresa correo y nick."); return; }
   if (!passwordInput) passwordInput = generarContrasena();
 
   let usuarios = JSON.parse(localStorage.getItem("usuariosApp") || "[]");
   if (usuarios.find(u => u.email === emailInput)) { alert("Usuario ya registrado."); return; }
 
-  const nuevoUsuario = { email: emailInput, password: passwordInput, nick: nickInput };
-  usuarios.push(nuevoUsuario);
+  usuarios.push({ email: emailInput, password: passwordInput, nick: nickInput });
   localStorage.setItem("usuariosApp", JSON.stringify(usuarios));
-  localStorage.setItem("usuarioActual", JSON.stringify(nuevoUsuario));
+  localStorage.setItem("usuarioActual", emailInput);
   alert(`Cuenta creada. Tu contraseña es: ${passwordInput}`);
   modal.classList.remove("active");
-  mostrarPerfil();
+  mostrarUsuarioPerfil();
 }
 
-// Mostrar perfil
-function mostrarPerfil() {
-  const usuario = JSON.parse(localStorage.getItem("usuarioActual"));
-  const perfilInfo = document.getElementById("perfilInfo");
-  perfilInfo.innerHTML = `<p>Nick: ${usuario.nick}</p><p>Email: ${usuario.email}</p>`;
+// Mostrar nick en perfil
+function mostrarUsuarioPerfil() {
+  const usuarioActual = localStorage.getItem("usuarioActual");
+  if (!usuarioActual) return;
+  const usuarios = JSON.parse(localStorage.getItem("usuariosApp") || "[]");
+  const user = usuarios.find(u => u.email === usuarioActual);
+  if (user) {
+    document.getElementById("perfilInfo").innerHTML = `<p>Nick: ${user.nick}</p>`;
+  }
 }
 
 // Historias
@@ -81,12 +88,22 @@ function closeStory() { storyModal.classList.remove("active"); }
 function mostrarSeccion(id, btn) {
   document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
   document.getElementById(id).classList.add("active");
-  document.querySelectorAll(".bottom-nav button").forEach(b => b.classList.remove("active"));
+
+  document.querySelectorAll(".bottom-nav button[data-target]").forEach(b => b.classList.remove("active"));
   btn.classList.add("active");
 }
 
-// Subir archivo
-function triggerUpload() { document.getElementById("uploadFile").click(); }
+// Manejo botones barra
+document.querySelectorAll(".bottom-nav button[data-target]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    mostrarSeccion(btn.getAttribute("data-target"), btn);
+  });
+});
+document.getElementById("uploadBtn").addEventListener("click", () => {
+  document.getElementById("uploadFile").click();
+});
+
+// Subir publicaciones
 const uploadInput = document.getElementById("uploadFile");
 uploadInput.addEventListener("change", () => {
   const archivo = uploadInput.files[0];
@@ -95,9 +112,9 @@ uploadInput.addEventListener("change", () => {
   uploadInput.value = "";
 });
 
-// Agregar publicaciones
 function agregarPost(archivo) {
   const feeds = [document.getElementById("feedInicio"), document.getElementById("feedPerfil")];
+
   feeds.forEach(feed => {
     const post = document.createElement("div");
     post.className = "post";
@@ -112,6 +129,7 @@ function agregarPost(archivo) {
       media.controls = true;
       media.loop = true;
       media.muted = false;
+      media.autoplay = true;
     }
     media.classList.add("post-media");
     post.appendChild(media);
