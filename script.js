@@ -1,96 +1,73 @@
-const modal = document.getElementById("loginModal");
-const loginForm = document.getElementById("loginForm");
-const registroForm = document.getElementById("registroForm");
-const storyModal = document.getElementById("storyModal");
-const storyImg = document.getElementById("storyImg");
+// Alternar pestañas
+const tabLoginBtn = document.getElementById("tabLoginBtn");
+const tabRegBtn = document.getElementById("tabRegBtn");
+const tabLogin = document.getElementById("tabLogin");
+const tabRegister = document.getElementById("tabRegister");
 
-// Mostrar modal al entrar si no hay usuario actual
-window.addEventListener("load", () => {
-  const usuarioActual = localStorage.getItem("usuarioActual");
-  if (!usuarioActual) modal.classList.add("active");
+tabLoginBtn.addEventListener("click", () => {
+  tabLogin.classList.add("active");
+  tabRegister.classList.remove("active");
+  tabLoginBtn.classList.add("active");
+  tabRegBtn.classList.remove("active");
+});
+tabRegBtn.addEventListener("click", () => {
+  tabLogin.classList.remove("active");
+  tabRegister.classList.add("active");
+  tabLoginBtn.classList.remove("active");
+  tabRegBtn.classList.add("active");
 });
 
-function mostrarLogin() {
-  loginForm.style.display = "block";
-  registroForm.style.display = "none";
-}
-function mostrarRegistro() {
-  loginForm.style.display = "none";
-  registroForm.style.display = "block";
-}
-
-function generarContrasena() {
-  const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
-  let pass = "";
-  for (let i = 0; i < 8; i++) pass += chars.charAt(Math.floor(Math.random() * chars.length));
-  return pass;
-}
-
-function iniciarSesion() {
-  const emailInput = document.getElementById("email").value.trim();
-  const passwordInput = document.getElementById("password").value.trim();
-  if (!emailInput || !passwordInput) { alert("Completa ambos campos."); return; }
-
+// Funciones login/registro
+function loginUser() {
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
   let usuarios = JSON.parse(localStorage.getItem("usuariosApp") || "[]");
-  let usuarioExistente = usuarios.find(u => u.email === emailInput);
+  let user = usuarios.find(u => u.email === email && u.password === password);
 
-  if (usuarioExistente) {
-    if (passwordInput === usuarioExistente.password) {
-      alert(`Bienvenido de nuevo ${emailInput} ✨`);
-      localStorage.setItem("usuarioActual", emailInput);
-      modal.classList.remove("active");
-    } else alert("Contraseña incorrecta.");
-  } else alert("Usuario no registrado. Usa 'Registrarme'.");
-}
-
-function registrarme() {
-  const emailInput = document.getElementById("emailReg").value.trim();
-  let passwordInput = document.getElementById("passwordReg").value.trim();
-  if (!emailInput) { alert("Ingresa tu correo."); return; }
-  if (!passwordInput) passwordInput = generarContrasena();
-
-  let usuarios = JSON.parse(localStorage.getItem("usuariosApp") || "[]");
-  if (usuarios.find(u => u.email === emailInput)) {
-    alert("Usuario ya registrado. Usa 'Iniciar Sesión'."); return;
+  if (user) {
+    alert(`Bienvenido ${user.nick} ✨`);
+    localStorage.setItem("usuarioActual", email);
+    document.getElementById("loginBox").style.display = "none";
+  } else {
+    alert("Correo o contraseña incorrectos.");
   }
+}
 
-  usuarios.push({ email: emailInput, password: passwordInput });
+function registerUser() {
+  const nick = document.getElementById("regNick").value.trim();
+  const email = document.getElementById("regEmail").value.trim();
+  const password = document.getElementById("regPassword").value.trim();
+
+  if (!nick || !email || !password) { alert("Completa todos los campos."); return; }
+
+  let usuarios = JSON.parse(localStorage.getItem("usuariosApp") || "[]");
+  if (usuarios.find(u => u.email === email)) { alert("Usuario ya registrado."); return; }
+
+  usuarios.push({ nick, email, password });
   localStorage.setItem("usuariosApp", JSON.stringify(usuarios));
-  localStorage.setItem("usuarioActual", emailInput);
-  alert(`Cuenta creada. Tu contraseña es: ${passwordInput}`);
-  modal.classList.remove("active");
+  localStorage.setItem("usuarioActual", email);
+
+  alert(`Cuenta creada. Bienvenido ${nick} ✨`);
+  document.getElementById("loginBox").style.display = "none";
 }
 
-// Historias
-function openStory(src) {
-  storyImg.src = src;
-  storyModal.classList.add("active");
-  setTimeout(closeStory, 4000);
-}
-function closeStory() { storyModal.classList.remove("active"); }
-
-// Navbar inferior
+// Secciones
 function mostrarSeccion(id, btn) {
   document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
   document.getElementById(id).classList.add("active");
-
   document.querySelectorAll(".bottom-nav button").forEach(b => b.classList.remove("active"));
   btn.classList.add("active");
 }
 
-// Activar subida de archivo desde el botón +
-function triggerUpload() {
-  document.getElementById("uploadFile").click();
-}
+// Subida de publicaciones
+function triggerUpload() { document.getElementById("uploadFile").click(); }
 
-// Subir publicación
 const uploadInput = document.getElementById("uploadFile");
 uploadInput.addEventListener("change", () => {
   const archivo = uploadInput.files[0];
   if (!archivo) return;
-
   agregarPost(archivo);
-  uploadInput.value = ""; // reset
+  uploadInput.value = "";
 });
 
 function agregarPost(archivo) {
@@ -108,24 +85,8 @@ function agregarPost(archivo) {
       media = document.createElement("video");
       media.src = URL.createObjectURL(archivo);
       media.controls = true;
-      media.loop = false; // 🔹 Se controla manualmente
-      media.autoplay = true;
+      media.loop = true;
       media.muted = false;
-      media.volume = 1.0;
-      media.playsInline = true;
-      media.style.maxHeight = "400px"; // tamaño tipo Instagram
-
-      // 🔹 Repetir solo 2 veces
-      let repeatCount = 0;
-      media.addEventListener("ended", () => {
-        repeatCount++;
-        if (repeatCount < 2) {
-          media.currentTime = 0;
-          media.play();
-        } else {
-          mostrarVerDeNuevo(post);
-        }
-      });
     }
     media.classList.add("post-media");
     post.appendChild(media);
@@ -139,23 +100,15 @@ function agregarPost(archivo) {
       <button onclick="alert('Compartir ↪️')">↪️</button>
     `;
     post.appendChild(actions);
-
     feed.prepend(post);
   });
 }
 
-// Mostrar "Ver de nuevo?" después de 2 repeticiones
-function mostrarVerDeNuevo(post) {
-  const btn = document.createElement("button");
-  btn.textContent = "👁 Ver de nuevo?";
-  btn.classList.add("verDeNuevoBtn");
-  btn.onclick = () => {
-    const media = post.querySelector("video");
-    if (media) {
-      media.currentTime = 0;
-      media.play();
-    }
-    btn.remove(); // 🔹 Se quita el botón después de reactivar
-  };
-  post.appendChild(btn);
+// Historias
+const storyModal = document.getElementById("storyModal");
+const storyImg = document.getElementById("storyImg");
+function openStory(src) {
+  storyImg.src = src;
+  storyModal.classList.add("active");
+  setTimeout(() => storyModal.classList.remove("active"), 4000);
 }
