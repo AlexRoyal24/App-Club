@@ -6,7 +6,7 @@ const registroForm = document.getElementById("registroForm");
 window.addEventListener("load", () => {
   const usuarioActual = localStorage.getItem("usuarioActual");
   if (!usuarioActual) modal.classList.add("active");
-  actualizarAudio();
+  actualizarVideosVisibles();
 });
 
 // Mostrar Login/Registro
@@ -73,7 +73,7 @@ function mostrarSeccion(id, btn) {
   document.querySelectorAll(".bottom-nav button").forEach(b => b.classList.remove("active"));
   btn.classList.add("active");
 
-  actualizarAudio();
+  actualizarVideosVisibles();
 }
 
 // Subida de publicaciones
@@ -161,16 +161,6 @@ function agregarPostPerfil(archivo) {
   feedPerfil.prepend(post);
 }
 
-// Scroll Perfil: reproducir solo video visible
-feedPerfil.addEventListener("scroll", () => {
-  const videos = feedPerfil.querySelectorAll("video");
-  videos.forEach(video => {
-    const rect = video.getBoundingClientRect();
-    if (rect.top >= 0 && rect.bottom <= window.innerHeight) video.play();
-    else video.pause();
-  });
-});
-
 // Historias
 const storyModal = document.getElementById("storyModal");
 const storyImg = document.getElementById("storyImg");
@@ -180,28 +170,7 @@ function openStory(src) {
   setTimeout(() => storyModal.classList.remove("active"), 4000);
 }
 
-// Audio: reproducir solo videos de la sección activa y pausar secciones inactivas
-function actualizarAudio() {
-  const secciones = ["inicio", "perfil"];
-  secciones.forEach(id => {
-    const seccion = document.getElementById(id);
-    const feed = document.getElementById(id === "inicio" ? "feedInicio" : "feedPerfil");
-    const activo = seccion.classList.contains("active");
-
-    feed.querySelectorAll("video").forEach(video => {
-      if (activo) {
-        // reproducir solo si está visible
-        const rect = video.getBoundingClientRect();
-        if (rect.top >= 0 && rect.bottom <= window.innerHeight) video.play();
-      } else {
-        video.pause();
-      }
-      // No mute por defecto, usa volumen del dispositivo
-    });
-  });
-}
-
-// Función para reproducir/pausar videos según visibilidad
+// Función que reproduce solo videos visibles en la sección activa
 function actualizarVideosVisibles() {
   const secciones = ["inicio", "perfil"];
   secciones.forEach(id => {
@@ -215,7 +184,6 @@ function actualizarVideosVisibles() {
 
       if (activo && estaVisible) video.play();
       else video.pause();
-      // No mute por defecto, usa volumen del dispositivo
     });
   });
 }
@@ -232,9 +200,3 @@ document.querySelectorAll(".bottom-nav button").forEach(btn => {
 
 // Inicial al cargar página
 window.addEventListener("load", actualizarVideosVisibles);
-
-
-// Llamar actualizarAudio al cambiar sección
-document.querySelectorAll(".bottom-nav button").forEach(btn => {
-  btn.addEventListener("click", () => setTimeout(actualizarAudio, 50));
-});
