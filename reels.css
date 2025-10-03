@@ -1,0 +1,35 @@
+/* reels.css */
+
+.reel {
+  width: 300px;
+  margin: 15px auto;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0px 2px 6px rgba(0,0,0,0.2);
+  position: relative;
+}
+
+.reel video {
+  width: 100%;
+  display: block;
+  border-radius: 12px;
+}
+
+.reel-actions {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px;
+  font-size: 1.2rem;
+  border-top: 1px solid #ddd;
+}
+
+.reel-actions span {
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.reel-actions span:hover {
+  transform: scale(1.2);
+  color: #ff3040;
+}
