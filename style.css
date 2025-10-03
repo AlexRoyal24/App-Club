@@ -1,93 +1,43 @@
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body {
-  font-family: Arial, sans-serif;
-  background: #000;
-  color: #fff;
-  overflow-x: hidden;
-}
+/* Reset y estilos generales */
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: Arial, sans-serif; background:#000; color:#fff; overflow-x:hidden; }
 
-.section {
-  display: none;
-  padding: 20px;
-  height: calc(100vh - 70px);
-  overflow-y: auto;
-}
-.section.active { display: block; }
+/* Secciones */
+.section { display:none; padding:20px; height:calc(100vh - 70px); overflow-y:auto; }
+.section.active { display:block; }
 
 /* Historias */
-.stories {
-  display: flex;
-  gap: 15px;
-  overflow-x: auto;
-  padding: 15px;
-  background: #111;
-  border-bottom: 1px solid #333;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-.story { flex: 0 0 auto; text-align: center; cursor: pointer; }
-.story img { width: 60px; height: 60px; border-radius: 50%; border: 3px solid #ff0050; object-fit: cover; }
-.story p { font-size: 12px; margin-top: 5px; }
+.stories { display:flex; gap:15px; overflow-x:auto; padding:15px; background:#111; border-bottom:1px solid #333; position:sticky; top:0; z-index:10; }
+.story { flex:0 0 auto; text-align:center; cursor:pointer; }
+.story img { width:60px; height:60px; border-radius:50%; border:3px solid #ff0050; object-fit:cover; }
+.story p { font-size:12px; margin-top:5px; }
+
+/* Feed */
+.feed { display:flex; flex-direction:column; gap:20px; margin-top:10px; }
+
+/* Publicaciones */
+.post { position:relative; width:95%; max-width:500px; margin:0 auto; border-radius:15px; overflow:hidden; background:#111; }
+.post-media { width:100%; border-radius:15px; cursor:pointer; }
+.post-actions { position:absolute; right:10px; bottom:10px; display:flex; flex-direction:column; gap:10px; }
+.post-actions button { background:rgba(0,0,0,0.5); border:none; border-radius:50%; width:45px; height:45px; color:#fff; font-size:20px; cursor:pointer; transition:transform 0.2s, background 0.3s; }
+.post-actions button:hover { background:#ff0050; transform:scale(1.2); }
 
 /* Navbar inferior */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: rgba(0,0,0,0.95);
-  display: flex;
-  justify-content: space-around;
-  padding: 10px 0;
-  border-top: 1px solid #333;
-  z-index: 20;
-}
-.bottom-nav button {
-  background: none;
-  border: none;
-  outline: none;
-  color: #aaa;
-  font-size: 22px;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-.bottom-nav button.active { color: #00c6ff; font-weight: bold; text-shadow: 0 0 10px #00c6ff; }
-.bottom-nav button:hover { transform: scale(1.2); color: #fff; }
+.bottom-nav { position:fixed; bottom:0; width:100%; background:rgba(0,0,0,0.95); display:flex; justify-content:space-around; padding:10px 0; border-top:1px solid #333; z-index:20; }
+.bottom-nav button { background:none; border:none; outline:none; color:#aaa; font-size:22px; cursor:pointer; transition:all 0.3s; }
+.bottom-nav button.active { color:#00c6ff; font-weight:bold; text-shadow:0 0 10px #00c6ff; }
+.bottom-nav button:hover { transform:scale(1.2); color:#fff; }
 
-/* Login/Registro flotante */
-.login-box {
-  position: fixed;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  background: #111;
-  border-radius: 15px;
-  padding: 30px;
-  width: 320px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-  text-align: center;
-  z-index: 100;
-}
+/* Modal login/registro */
+.modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.5s ease; z-index:50; flex-direction:column; text-align:center; }
+.modal.active { opacity:1; pointer-events:all; }
+.modal h2 { margin-bottom:20px; font-size:28px; }
+.modal button { margin:10px 0; padding:15px 40px; border:none; border-radius:10px; background:#ff0050; color:#fff; font-size:20px; cursor:pointer; }
+.modal button:hover { background:#ff3366; }
+.modal input { width:80%; padding:12px; margin:10px 0; border:none; border-radius:5px; outline:none; font-size:16px; }
+.form-container { margin-top:20px; display:none; }
 
-.login-box h2 { margin-bottom: 20px; font-size: 24px; }
-.login-box input {
-  width: 90%; padding: 12px; margin: 10px 0; border-radius: 10px;
-  border: none; outline: none; font-size: 16px;
-}
-.login-box button {
-  width: 50%; padding: 12px; margin-top: 10px; border: none;
-  border-radius: 10px; background: #ff0050; color: #fff;
-  font-size: 16px; cursor: pointer; transition: background 0.3s;
-}
-.login-box button:hover { background: #ff3366; }
-
-.tab-buttons {
-  display: flex; justify-content: space-around; margin-bottom: 15px;
-}
-.tab-buttons button {
-  flex: 1; padding: 10px 0; border: none; background: #222; color: #aaa;
-  font-size: 16px; cursor: pointer; transition: 0.3s; border-radius: 10px; margin: 0 5px;
-}
-.tab-buttons button.active { background: #ff0050; color: #fff; }
-
-.tab-content { display: none; }
-.tab-content.active { display: block; }
+/* Historias modal */
+.story-modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.5s ease; z-index:40; }
+.story-modal.active { opacity:1; pointer-events:all; }
+.story-modal img { max-width:90%; max-height:90%; border-radius:10px; }
