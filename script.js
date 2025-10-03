@@ -108,9 +108,24 @@ function agregarPost(archivo) {
       media = document.createElement("video");
       media.src = URL.createObjectURL(archivo);
       media.controls = true;
-      media.loop = true;
-      media.muted = true;
+      media.loop = false; // 🔹 Se controla manualmente
+      media.autoplay = true;
+      media.muted = false;
+      media.volume = 1.0;
+      media.playsInline = true;
       media.style.maxHeight = "400px"; // tamaño tipo Instagram
+
+      // 🔹 Repetir solo 2 veces
+      let repeatCount = 0;
+      media.addEventListener("ended", () => {
+        repeatCount++;
+        if (repeatCount < 2) {
+          media.currentTime = 0;
+          media.play();
+        } else {
+          mostrarVerDeNuevo(post);
+        }
+      });
     }
     media.classList.add("post-media");
     post.appendChild(media);
@@ -122,7 +137,6 @@ function agregarPost(archivo) {
       <button onclick="alert('Te gustó ❤️')">❤️</button>
       <button onclick="alert('Comentar 💬')">💬</button>
       <button onclick="alert('Compartir ↪️')">↪️</button>
-      <button onclick="verDeNuevo(this)">👁 Ver de nuevo?</button>
     `;
     post.appendChild(actions);
 
@@ -130,12 +144,18 @@ function agregarPost(archivo) {
   });
 }
 
-// Ver de nuevo (abre modal o resalta)
-function verDeNuevo(btn) {
-  const post = btn.closest(".post");
-  const media = post.querySelector("video, img");
-  if (media.tagName === "VIDEO") {
-    media.currentTime = 0;
-    media.play();
-  }
+// Mostrar "Ver de nuevo?" después de 2 repeticiones
+function mostrarVerDeNuevo(post) {
+  const btn = document.createElement("button");
+  btn.textContent = "👁 Ver de nuevo?";
+  btn.classList.add("verDeNuevoBtn");
+  btn.onclick = () => {
+    const media = post.querySelector("video");
+    if (media) {
+      media.currentTime = 0;
+      media.play();
+    }
+    btn.remove(); // 🔹 Se quita el botón después de reactivar
+  };
+  post.appendChild(btn);
 }
